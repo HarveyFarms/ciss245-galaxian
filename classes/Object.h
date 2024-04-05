@@ -8,13 +8,14 @@ class Object
 {
 public:
   Object()
+    : image(NULL)
   {}
   Object(Image * s)
   : image(s), assembled(true)
   {}
   ~Object()
   {
-    delete image;
+    if (image != NULL) delete image;
   }
   static void set_surface(Surface * s)
   {
@@ -59,13 +60,13 @@ public:
   }
   virtual void extra()
   {}
-  void update(bool move = false)
+  void update(bool move = false, bool dont_attack = false)
   {
     x() += dx_;
     y() += dy_;
-    extra_update(move);
+    extra_update(move, dont_attack);
   }
-  virtual void extra_update(bool move)
+  virtual void extra_update(bool move, bool dont_attack)
   {}
   virtual bool outside_bottom()
   {

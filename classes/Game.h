@@ -21,6 +21,7 @@
 #include "Background.h"
 #include "Ship.h"
 #include "Wave.h"
+#include "Explosion.h"
 
 class Game
 {
@@ -33,6 +34,7 @@ private:
   Background * background;
   Ship * Galaxip;
   Wave * waves;
+  std::vector< Explosion > explosions;
 
   // methods to run the game
   void get_input();
@@ -44,6 +46,7 @@ private:
   void putinfile(int);
   void handle_background();
   void background_input();
+  void laser_hits_enemy();
 
   // extra methods
   bool user_quits() 

@@ -69,8 +69,8 @@ void Game::get_input()
   background_input();
   if (playing())
   {
-    if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -2;
-    else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 2;
+    if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
+    else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
     else Galaxip->dx() = 0;
     if (kp[UPARROW] && !pressed)
     {
@@ -95,25 +95,7 @@ void Game::update()
   {
     Galaxip->update();
     waves->update();
-    for (int i = 0; i < Galaxip->get_lasers().size(); ++i)
-    {
-      for (int j = 0; j < waves->get_enemies().size() && i < Galaxip->get_lasers().size(); ++j)
-      {
-        if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]))
-        {
-          if (waves->get_enemies()[j]->is_attacking()) 
-          {
-            if (!waves->get_enemies()[j]->is_flag())
-              update_score(waves->get_enemies()[j]->amount * 2);
-           else
-              update_score(150);
-          }
-          else update_score(waves->get_enemies()[j]->amount);
-          Galaxip->cleanup(i--);
-          waves->cleanup(j--);
-        }
-      }
-    }
+    laser_hits_enemy();
   }
 }
 void Game::draw()
@@ -132,6 +114,12 @@ void Game::draw()
   {
     Galaxip->draw();
     waves->draw();
+    for (int i = 0; i < explosions.size(); ++i)
+    {
+      explosions[i].draw();
+      if (explosions[i].finished)
+        explosions.erase(explosions.begin() + (i--));
+    }
   }
 
   surface->unlock();
@@ -326,4 +314,27 @@ void Game::setup_ships()
   Galaxip->y() = H / 2 + 400;
   Galaxip->x() = W / 2 - 150;
   Galaxip->dy() = 0;
+}
+void Game::laser_hits_enemy()
+{
+  for (int i = 0; i < Galaxip->get_lasers().size(); ++i)
+  {
+    for (int j = 0; j < waves->get_enemies().size() && i < Galaxip->get_lasers().size(); ++j)
+    {
+      if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]))
+      {
+        if (waves->get_enemies()[j]->is_attacking()) 
+        {
+          if (!waves->get_enemies()[j]->is_flag())
+            update_score(waves->get_enemies()[j]->amount * 2);
+          else
+            update_score(150);
+        }
+        else update_score(waves->get_enemies()[j]->amount);
+        Galaxip->cleanup(i--);
+        explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
+        waves->decrease(j--);
+      }
+    }
+  }
 }
