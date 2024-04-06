@@ -74,7 +74,7 @@ void Wave::update()
     reset();
   for (Enemy * e : enemies)
   {
-    if (count <= 1)
+    if (count <= 1) // count is for controlling the amnt of enemies on the screen
       e->update(move, false);
     else
       e->update(move, true);
@@ -114,15 +114,17 @@ void Wave::reset()
   for (int i = 0; i < 2; ++i)
   {
     enemies[i] = new Flag;
-    enemies[i]->breaktime = 1;
+    enemies[i]->breaktime = 20;
     enemies[i]->x() = (i * 135) + 135;
+    enemies[i]->dx() = 0;
     enemies[i]->y() = -32;
-    enemies[i]->save(enemies[i]->x(), 0);
+    enemies[i]->save(enemies[i]->x(), y);
   }
   for (int i = 2; i < 5; ++i)
   {
     enemies[i] = new Red(enemies[0]);
-    enemies[i]->breaktime = 25;
+    enemies[i]->breaktime = 55;
+    enemies[i]->dx() = 0;
     enemies[i]->x() = ((i-2) * 45) + 90;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 45);
@@ -130,7 +132,8 @@ void Wave::reset()
   for (int i = 5; i < 8; ++i)
   {
     enemies[i] = new Red(enemies[1]);
-    enemies[i]->breaktime = 25;
+    enemies[i]->breaktime = 55;
+    enemies[i]->dx() = 0;
     enemies[i]->x() = ((i-2) * 45) + 90;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 45);
@@ -138,7 +141,8 @@ void Wave::reset()
   for (int i = 8; i < 16; ++i)
   {
     enemies[i] = new Purple;
-    enemies[i]->breaktime = 55;
+    enemies[i]->breaktime = 75;
+    enemies[i]->dx() = 0;
     enemies[i]->x() = (i % 8 * 45) + 45;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 90);
@@ -147,7 +151,8 @@ void Wave::reset()
   {
     enemies[i] = new Blue;
     int j = i % 3;
-    enemies[i]->breaktime = j * 45 + 80;
+    enemies[i]->breaktime = j * 35 + 100;
+    enemies[i]->dx() = 0;
     enemies[i]->x() = (i % 10 * 45);
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 135 + j * 45);
