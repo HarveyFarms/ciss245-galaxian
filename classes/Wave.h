@@ -15,8 +15,11 @@ public:
   void update();
   void draw();
   void decrease(int t);
+  void reset();
   std::vector< Enemy * > get_enemies() { return enemies; }
   bool wave_has_died;
+  bool coming_in;
+  int wave_amount;
 private:
   bool move;
   int count;

@@ -72,12 +72,12 @@ void Game::get_input()
     if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
     else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
     else Galaxip->dx() = 0;
-    if (kp[UPARROW] && !pressed)
+    if (kp[SPACE] && !pressed)
     {
       Galaxip->shoot();
       pressed = true;
     }
-    else if (!kp[UPARROW] && pressed)
+    else if (!kp[SPACE] && pressed)
     {
       pressed = false;
     }
