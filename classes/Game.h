@@ -47,6 +47,7 @@ private:
   void handle_background();
   void background_input();
   void laser_hits_enemy();
+  void laser_hits_ship();
   void enemy_hits_ship();
 
   // extra methods

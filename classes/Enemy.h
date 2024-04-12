@@ -26,9 +26,10 @@ public:
   {
     for (int i = 0; i < lasers.size(); ++i)
     {
-      if (!lasers[i].on_screen()) 
+      if (!lasers[i].on_screen())
         lasers.erase(lasers.begin() + (i--));
-      else lasers[i].draw(s_);
+      else
+        lasers[i].draw(s_);
     }
   }
   void shoot()
@@ -39,13 +40,17 @@ public:
   {
     if (attacking)
     {
+      if (rand() % 100 == 0 && lasers.size() < 3)
+      {
+        lasers.push_back(Laser(x() + (w() / 2), y(), false));
+      }
       if (doing_sin_curve)
       {
         dx() = 8 * sin(PI * y() / 100);
         dy() = 2;
       }
       else
-    {
+      {
         if (going_left)
         {
           dx() = 5;
@@ -146,6 +151,7 @@ public:
   int breaktime;
   bool passed0;
   bool passed1;
+  std::vector< Laser > get_lasers() { return lasers; }
 private:
   std::vector< Laser > lasers;
 };

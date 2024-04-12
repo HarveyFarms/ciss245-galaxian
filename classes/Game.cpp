@@ -113,11 +113,11 @@ void Game::update()
       }
     }
     else
-    {
+  {
       Galaxip->update();
-      laser_hits_enemy();
       enemy_hits_ship();
     }
+    laser_hits_enemy();
   }
 }
 void Game::draw()
@@ -134,8 +134,7 @@ void Game::draw()
   }
   if (playing())
   {
-    if (!reboot_ship) 
-      Galaxip->draw();
+    Galaxip->draw(reboot_ship);
     waves->draw();
     for (int i = 0; i < explosions.size(); ++i)
     {
@@ -241,7 +240,7 @@ void Game::putinfile(int place)
   output << copy;
   output.flush();
   output.close();
-  }
+}
 void Game::handle_background()
 {
   if (background->game_ended()) ++count;
@@ -308,7 +307,7 @@ void Game::background_input()
     }
   }
   else
-  {
+{
     if (background->on_starting_screen())
     {
       if (kp[RET] && goto_play()) background->switch_screen();
@@ -380,4 +379,7 @@ void Game::enemy_hits_ship()
       break;
     }
   }
+}
+void Game::laser_hits_ship()
+{
 }

@@ -1,6 +1,9 @@
 d:	main.cpp
 	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses; ./a.out
 
+t:	main.cpp
+	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses
+
 a asan:	main.cpp
 	g++ main.cpp src/*.cpp src/*.c classes/*.cpp -g -fsanitize=address `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses
 

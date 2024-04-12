@@ -24,6 +24,12 @@ class Ship : public Object
       else lasers[i].draw(s_);
     }
   }
+  void draw(bool b)
+  {
+    if (!b)
+      s_->put_image(*image, image->rect());
+    extra();
+  }
   void shoot()
   {
     if (lasers.size() < AMOUNT_OF_SHOOTABLE_LASERS) lasers.push_back(Laser(x() + (w() / 2), y()));
