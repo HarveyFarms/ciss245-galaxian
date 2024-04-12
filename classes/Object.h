@@ -92,6 +92,14 @@ public:
   {
     assembled = !assembled;
   }
+  bool collided_w_object(Object * o)
+  {
+    if (x() <= o->x() && o->x() <= x() + w() || x() <= o->x() + o->w() && o->x() + o->w() <= x() + w())
+    {
+      return (y() <= o->y() && o->y() <= y() + h() || y() <= o->y() + o->h() && o->y() + o->h() <= y() + h());
+    }
+    else return false;
+  }
   static Surface * s_;
   Image* image;
   bool assembled;

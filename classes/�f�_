@@ -89,20 +89,33 @@ void Game::get_input()
       }
     }
   }
+    /* if (!background->game_ended()) */
+    /* { */
+    /*   if (kp[ESC]) background->game_over_switch(); */
+    /* } */
 }
 void Game::update()
 {
   if (amount_ships == 0 && !background->game_ended())
   {
     background->game_over_switch();
-    amount_ships = 3;
+  }
+  if (background->game_ended())
+  {
+    ++timer;
+    if (timer > 300)
+    {
+      timer = 0;
+      background->game_over_switch();
+      background->typing_switch();
+    }
   }
   background->update();
   handle_background();
   if (playing())
   {
     waves->update();
-    if (reboot_ship && !background->game_ended())
+    if (reboot_ship)
     {
       ++timer;
       if (timer > 300)
@@ -151,12 +164,6 @@ void Game::draw()
 void Game::reset_all()
 {
   background->reset();
-  if (Galaxip != nullptr) delete Galaxip;
-  if (waves != nullptr) delete waves;
-  Galaxip = new Ship();
-  waves = new Wave();
-  waves->set_surface(surface);
-  setup_ships();
 }
 int Game::infile()
 {
@@ -246,7 +253,9 @@ void Game::handle_background()
 {
   if (background->game_ended()) ++count;
   if (waiting)
+  {
     ++wait;
+  }
   if (wait > 10)
   {
     waiting = false;
@@ -341,7 +350,6 @@ void Game::setup_ships()
   Galaxip->y() = H / 2 + 400;
   Galaxip->x() = W / 2 - 150;
   Galaxip->dy() = 0;
-  reboot_ship = false;
 }
 void Game::laser_hits_enemy()
 {
@@ -376,7 +384,7 @@ void Game::enemy_hits_ship()
       explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
       waves->decrease(j--);
       --amount_ships;
-      reboot_ship = true;
+      if (amount_ships > 0) reboot_ship = true;
       break;
     }
   }

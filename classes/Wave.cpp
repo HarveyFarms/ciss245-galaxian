@@ -104,7 +104,6 @@ void Wave::decrease(int t)
 void Wave::reset()
 {
   ++wave_amount;
-  std::cout << "wave_amount = " << wave_amount << '\n';
   coming_in = true;
   x = 0;
   y = 100;

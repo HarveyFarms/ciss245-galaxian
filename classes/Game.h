@@ -47,6 +47,7 @@ private:
   void handle_background();
   void background_input();
   void laser_hits_enemy();
+  void enemy_hits_ship();
 
   // extra methods
   bool user_quits() 
@@ -84,7 +85,10 @@ private:
   Keyboard keyboard;
 
   // extra
+  int timer;
+  int amount_ships;
   bool paused;
+  bool reboot_ship;
   bool done_typing;
   int count;
   bool waiting;
