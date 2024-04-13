@@ -5,7 +5,6 @@
 #include "Object.h"
 #include "Laser.h"
 
-const int AMOUNT_OF_SHOOTABLE_LASERS = 20;
 
 class Ship : public Object
 {

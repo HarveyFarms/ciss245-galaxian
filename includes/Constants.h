@@ -7,6 +7,7 @@ const int H = 1000;
 const float PI = 3.14159;
 const int s60FPS = 16;
 const int GAME_IS_RUNNING = 1;
+const int AMOUNT_OF_SHOOTABLE_LASERS = 3;
 
 #endif
 

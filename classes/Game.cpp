@@ -76,13 +76,14 @@ void Game::get_input()
     {
       if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
       else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
+      else if (kp[TAB])
+          amount_ships--;
       else Galaxip->dx() = 0;
       if (kp[SPACE] && !pressed)
       {
         Galaxip->shoot();
         pressed = true;
       }
-
       else if (!kp[SPACE] && pressed)
       {
         pressed = false;
@@ -116,6 +117,7 @@ void Game::update()
   {
       Galaxip->update();
       enemy_hits_ship();
+      laser_hits_ship();
     }
     laser_hits_enemy();
   }
@@ -153,6 +155,7 @@ void Game::reset_all()
   if (Galaxip != nullptr) delete Galaxip;
   if (waves != nullptr) delete waves;
   Galaxip = new Ship();
+  amount_ships = 3;
   waves = new Wave();
   waves->set_surface(surface);
   setup_ships();
@@ -243,6 +246,11 @@ void Game::putinfile(int place)
 }
 void Game::handle_background()
 {
+  background->amnt_lives = amount_ships;
+  std::string waves_s = "wave: ";
+  std::string waves_sco = std::to_string(waves->wave_amount).c_str();
+  background->waves_str() = waves_s + waves_sco;
+  background->inc_wave = waves->coming_in;
   if (background->game_ended()) ++count;
   if (waiting)
     ++wait;
@@ -348,7 +356,7 @@ void Game::laser_hits_enemy()
   {
     for (int j = 0; j < waves->get_enemies().size() && i < Galaxip->get_lasers().size(); ++j)
     {
-      if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]))
+      if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]) && !waves->get_enemies()[j]->is_hit)
       {
         if (waves->get_enemies()[j]->is_attacking()) 
         {
@@ -369,17 +377,31 @@ void Game::enemy_hits_ship()
 {
   for (int j = 0; j < waves->get_enemies().size(); ++j)
   {
-    if (Galaxip->collided_w_object(waves->get_enemies()[j]))
+    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && waves->get_enemies()[j]->counter == 0)
     {
       explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
-      explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
       waves->decrease(j--);
+      explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
       --amount_ships;
       reboot_ship = true;
-      break;
+      continue;
     }
   }
 }
 void Game::laser_hits_ship()
 {
+  for (int i = 0; i < waves->get_enemies().size(); ++i)
+  {
+    for (int j = 0; j < waves->get_enemies()[i]->get_lasers().size(); ++j)
+    {
+      if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]))
+      {
+        explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
+        waves->get_enemies()[i]->cleanup(j--);
+        --amount_ships;
+        reboot_ship = true;
+        continue;
+      }
+    }
+  }
 }

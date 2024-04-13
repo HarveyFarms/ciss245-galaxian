@@ -13,6 +13,15 @@ public:
   {}
   virtual void extra_update(bool square, bool dont_attack)
   {
+    if (counter > 0)
+    {
+      counter++;
+      if (counter > 200)
+      {
+        counter = 0;
+        delete_me = true;
+      }
+    }
     if (master->has_been_hit()) on_own = true;
     passed0 = false;
     if (!on_own && master->is_attacking() && !master->close_to_bottom() && !attacking)

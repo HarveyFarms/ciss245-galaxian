@@ -69,6 +69,7 @@ void Wave::set_surface(Surface * s)
 
 void Wave::update()
 {
+  if (enemies.size() == 0) wave_has_died = true;
   x += dx;
   if (x <= 0 || x + w >= W)
   {
@@ -78,14 +79,20 @@ void Wave::update()
   }
   if (wave_has_died)
     reset();
-  for (Enemy * e : enemies)
+  for (int i = 0; i < enemies.size(); ++i)
   {
+    if (enemies[i]->delete_me)
+    {
+      enemies.erase(enemies.begin() + (i--));
+      continue;
+    }
+    if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
     if (count <= 1) // count is for controlling the amnt of enemies on the screen
-      e->update(move, false);
+      enemies[i]->update(move, false);
     else
-      e->update(move, true);
-    if (e->enemy_attacking_control0()) ++count;
-    if (e->enemy_attacking_control1()) --count;
+      enemies[i]->update(move, true);
+    if (enemies[i]->enemy_attacking_control0()) ++count;
+    if (enemies[i]->enemy_attacking_control1()) --count;
   }
   move = false;
 }
@@ -95,7 +102,7 @@ void Wave::draw()
   if (show_rect_) surface->put_rect(Rect(*this), WHITE);
   for (Enemy * e : enemies)
   {
-    if (!e->has_been_hit()) e->draw();
+    e->draw();
   }
 }
 
@@ -103,8 +110,7 @@ void Wave::decrease(int t)
 {
   enemies[t]->switch_hit_status();
   if (enemies[t]->is_attacking()) count--;
-  enemies.erase(enemies.begin() + t);
-  if (enemies.size() == 0) wave_has_died = true;
+  enemies[t]->counter = 1;
 }
 
 void Wave::reset()

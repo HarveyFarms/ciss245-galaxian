@@ -11,6 +11,13 @@ Background::Background() :
   small("fonts/Emulogic-zrEw.ttf", 12),
   middle("fonts/Emulogic-zrEw.ttf", 24),
   big("fonts/Emulogic-zrEw.ttf", 48),
+  waves_string("wave: 1"),
+  wave_count(new Image(small.render(waves_string.c_str(), WHITE))),
+  incoming_wave(big.render("INCOMING WAVE", RED)),
+  lives0("images/GalaxianGalaxip.gif"),
+  lives1("images/GalaxianGalaxip.gif"),
+  lives2("images/GalaxianGalaxip.gif"),
+  inc_wave(false),
   high(small.render("hi-score", ORANGE)),
   high_score(0),
   high_s(new Image(small.render(std::to_string(score_score).c_str(), WHITE))),
@@ -122,6 +129,7 @@ Background::~Background()
   if (red_escort != nullptr) delete red_escort;
   if (purple != nullptr) delete purple;
   if (blue != nullptr) delete blue;
+  if (wave_count != nullptr) delete wave_count;
 }
 
 
@@ -137,8 +145,6 @@ void Background::update()
   {
     s.update();
   }
-  if (score_s != nullptr) delete score_s;
-  if (high_s != nullptr) delete high_s;
   if (starting_screen || instructions_screen || leaderboards_screen)
   {
     if (Iinstructions != nullptr) delete Iinstructions;
@@ -149,440 +155,469 @@ void Background::update()
       Iinstructions->rect().y = H / 2 + 430;
     }
     else
-    {
+  {
       Iinstructions = new Image(small.render("backspace to return to starting screen", WHITE));
       Iinstructions->rect().x = W / 2 - 250;
       Iinstructions->rect().y = H / 2 + 430;
     }
   }
-    high_s = new Image(small.render(std::to_string(high_score).c_str(), WHITE));
-    score_s = new Image(small.render(std::to_string(score_score).c_str(), WHITE));
-    high_s->rect().x = high.rect().x;
-    high_s->rect().y = high.rect().y + 15;
-    score_s->rect().x = score.rect().x;
-    score_s->rect().y = score.rect().y + 15;
-    if (score_score > high_score) high_score = score_score;
-    if (leaderboards_screen) get_names();
-    if (leaderboards_screen) update_score_section();
-    if (starting_screen) update_cursor_section();
-    if (instructions_screen) update_ships();
-  }
+  if (score_s != nullptr) delete score_s;
+  if (high_s != nullptr) delete high_s;
+  if (wave_count != nullptr) delete wave_count;
+  wave_count = new Image(small.render(waves_string.c_str(), WHITE));
+  high_s = new Image(small.render(std::to_string(high_score).c_str(), WHITE));
+  score_s = new Image(small.render(std::to_string(score_score).c_str(), WHITE));
+  wave_count->rect().x = 5;
+  wave_count->rect().y = H - 20;
+  high_s->rect().x = high.rect().x;
+  high_s->rect().y = high.rect().y + 15;
+  score_s->rect().x = score.rect().x;
+  score_s->rect().y = score.rect().y + 15;
+  if (score_score > high_score) high_score = score_score;
+  if (leaderboards_screen) get_names();
+  if (leaderboards_screen) update_score_section();
+  if (starting_screen) update_cursor_section();
+  if (instructions_screen) update_ships();
+}
 
-  void Background::draw()
+void Background::draw()
+{
+  if (typing) 
   {
-    if (typing) 
-    {
-      surface->put_image(*keyinput0, keyinput0->rect());
-      surface->put_image(keyinput1, keyinput1.rect());
-    }
-    else
-    {
-      for (Star & s : stars)
-      {
-        s.draw();
-      }
-      if (game_over) surface->put_image(gameover, gameover.rect());
-      else if (starting_screen)
-      {
-        surface->put_image(name, name.rect());
-        surface->put_image(*galaxian_logo, galaxian_logo->rect());
-        surface->put_image(madeby, madeby.rect());
-
-
-        draw_cursor_section();
-        surface->put_image(*Iinstructions, Iinstructions->rect());
-      }
-      else if (leaderboards_screen)
-      {
-        draw_score_section();
-        surface->put_image(*Iinstructions, Iinstructions->rect());
-      }
-      else if (instructions_screen)
-      {
-        surface->put_image(we_are_the_galaxians, we_are_the_galaxians.rect());
-        surface->put_image(mission_destroy_aliens, mission_destroy_aliens.rect());
-        surface->put_image(score_advance_table, score_advance_table.rect());
-        surface->put_image(convoy_charger, convoy_charger.rect());
-        if (!flag_moving) surface->put_image(flagship_points, flagship_points.rect());
-        if (!red_moving) surface->put_image(red_escort_points, red_escort_points.rect());
-        if (!purple_moving) surface->put_image(purple_points, purple_points.rect());
-        if (!blue_moving) surface->put_image(blue_points, blue_points.rect());
-        draw_ships();
-        surface->put_image(*Iinstructions, Iinstructions->rect());
-      }
-      else
-      {
-        surface->put_image(name, name.rect());
-        surface->put_image(*galaxian_logo, galaxian_logo->rect());
-        surface->put_image(*high_s, high_s->rect());
-        surface->put_image(*score_s, score_s->rect());
-        surface->put_image(high, high.rect());
-        surface->put_rect(high_rect, ORANGE);
-        surface->put_image(score, score.rect());
-        surface->put_rect(score_rect, ORANGE);
-      }
-    }
+    surface->put_image(*keyinput0, keyinput0->rect());
+    surface->put_image(keyinput1, keyinput1.rect());
   }
-
-
-  void Background::setup_text()
-  {
-    gameover.rect().x = W / 2 - 225;
-    gameover.rect().y = H / 2 - 100;
-    keyinput1.rect().x = W / 2 - 300;
-    keyinput1.rect().y = H / 2 - 100;
-    if (starting_screen)
+  else
+{
+    for (Star & s : stars)
     {
-      if (galaxian_logo != nullptr) delete galaxian_logo;
-      galaxian_logo = new Image("images/biggalaxian.png");
-      galaxian_logo->rect().x = W / 2 - 225;
-      galaxian_logo->rect().y = H / 2 - 200;
-      name.rect().x = W / 2 + 80;
-      name.rect().y = H / 2 - 60;
-      madeby.rect().x = W / 2 - 20;
-      madeby.rect().y = H / 2 - 60;
+      s.draw();
+    }
+    if (game_over) surface->put_image(gameover, gameover.rect());
+    else if (starting_screen)
+    {
+    surface->put_image(name, name.rect());
+    surface->put_image(*galaxian_logo, galaxian_logo->rect());
+    surface->put_image(madeby, madeby.rect());
 
-      galactic_heroes.rect().x = W / 2 - 100;
-      galactic_heroes.rect().y = 25;
-      top10.rect().x = W / 2 - 70;
-      top10.rect().y = 70;
-      pos_score_name.rect().x = W / 2 - 235;
-      pos_score_name.rect().y = 115;
 
+    draw_cursor_section();
+    surface->put_image(*Iinstructions, Iinstructions->rect());
+  }
+    else if (leaderboards_screen)
+    {
+      draw_score_section();
+      surface->put_image(*Iinstructions, Iinstructions->rect());
     }
     else if (instructions_screen)
     {
-      we_are_the_galaxians.rect().x = W / 2 - 250;
-      we_are_the_galaxians.rect().y = H / 2 - 300;
-      mission_destroy_aliens.rect().x = W / 2 - 275;
-      mission_destroy_aliens.rect().y = H / 2 - 225;
-      score_advance_table.rect().x = W / 2 - 280;
-      score_advance_table.rect().y = H / 2 - 100;
-      convoy_charger.rect().x = W / 2 - 250;
-      convoy_charger.rect().y = H / 2 - 50;
-      flagship_points.rect().x = W / 2 - 200;
-      flagship_points.rect().y = H / 2 + 25;
-      red_escort_points.rect().x = W / 2 - 200;
-      red_escort_points.rect().y = H / 2 + 100;
-      purple_points.rect().x = W / 2 - 200;
-      purple_points.rect().y = H / 2 + 175;
-      blue_points.rect().x = W / 2 - 200;
-      blue_points.rect().y = H / 2 + 250;
+      surface->put_image(we_are_the_galaxians, we_are_the_galaxians.rect());
+      surface->put_image(mission_destroy_aliens, mission_destroy_aliens.rect());
+      surface->put_image(score_advance_table, score_advance_table.rect());
+      surface->put_image(convoy_charger, convoy_charger.rect());
+      if (!flag_moving) surface->put_image(flagship_points, flagship_points.rect());
+      if (!red_moving) surface->put_image(red_escort_points, red_escort_points.rect());
+      if (!purple_moving) surface->put_image(purple_points, purple_points.rect());
+      if (!blue_moving) surface->put_image(blue_points, blue_points.rect());
+      draw_ships();
+      surface->put_image(*Iinstructions, Iinstructions->rect());
     }
     else
-    {
-      if (galaxian_logo != nullptr) delete galaxian_logo;
-      galaxian_logo = new Image("images/galaxian.png");
-      high.rect().x = 10;
-      high.rect().y = 5;
-      high_s->rect().x = high.rect().x;
-      high_s->rect().y = high.rect().y - 30;
-      score.rect().x = W - 100;
-      score.rect().y = 5;
-      score_s->rect().x = score.rect().x;
-      score_s->rect().y = score.rect().y - 30;
-      name.rect().x = W / 2 - 80;
-      name.rect().y = H - 20;
-      galaxian_logo->rect().x = W / 2 - 100;
-      galaxian_logo->rect().y = 5;
-    }
-  }
-
-
-  void Background::setup_rects()
   {
-    if (!starting_screen)
-    {
-      high_rect.x = 10;
-      high_rect.y = 20;
-      high_rect.w = 96;
-      high_rect.h = 2;
-
-      score_rect.x = W - 100;
-      score_rect.y = 20;
-      score_rect.w = 60;
-      score_rect.h = 2;
-    }
-    else
-    {
-      pos_r.x = W / 2 - 234;
-      first.rect().x = pos_r.x - 3;
-      second.rect().x = pos_r.x - 3;
-      third.rect().x = pos_r.x - 3;
-      fourth.rect().x = pos_r.x - 3;
-      fifth.rect().x = pos_r.x - 3;
-      sixth.rect().x = pos_r.x - 3;
-      seventh.rect().x = pos_r.x - 3;
-      eighth.rect().x = pos_r.x - 3;
-      ninth.rect().x = pos_r.x - 3;
-      tenth.rect().x = pos_r.x - 3;
-      pos_r.y = 130;
-      first.rect().y = pos_r.y + 40;
-      second.rect().y = pos_r.y + 120;
-      third.rect().y = pos_r.y + 200;
-      fourth.rect().y = pos_r.y + 280;
-      fifth.rect().y = pos_r.y + 360;
-      sixth.rect().y = pos_r.y + 440;
-      seventh.rect().y = pos_r.y + 520;
-      eighth.rect().y = pos_r.y + 600;
-      ninth.rect().y = pos_r.y + 680;
-      tenth.rect().y = pos_r.y + 760;
-      pos_r.w = 35;
-      pos_r.h = 2;
-
-      score_r.x = W / 2 - 42;
-      score_r.y = 130;
-      score_r.w = 59;
-      score_r.h = 2;
-
-      name_r.x = W / 2 + 174;
-      name_r.y = 130;
-      name_r.w = 47;
-      name_r.h = 2;
-    }
-  }
-
-  Star::Star() :
-    x(rand() % W), y(rand() % H), dx(0), dy(1), 
-    r(rand() % 256), g(rand() % 256), b(rand() % 256),
-    timer(0), on_screen(true)
-  {}
-
-
-  void Star::update()
-  {
-    if (on_screen)
-    {
-      if (rand() % 1000 == 0) on_screen = false;
-      if (y + 3 >= H)
+      if (inc_wave) 
+        surface->put_image(incoming_wave, incoming_wave.rect());
+      if (amnt_lives > 0)
       {
-        y = 0;
-        x = rand() % W;
-      }
-      y += dy;
-      x += dx;
-    }
-    else
-    {
-      timer++;
-      if (y + 3 >= H)
-      {
-        y = 0;
-        x = rand() % W;
-      }
-      y += dy;
-      x += dx;
-      if (timer > 100)
-      {
-        on_screen = true;
-        timer = 0;
-      }
-    }
-  }
-
-
-  void Star::draw()
-  {
-    if (on_screen)
-    {
-      for (int i = 0; i < 2; ++i)
-      {
-        for (int j = 0; j < 2; ++j)
+        surface->put_image(lives2, lives2.rect());
+        if (amnt_lives > 1)
         {
-          s_->put_pixel(x + i, y + j, r, g, b);
+          surface->put_image(lives1, lives1.rect());
+          if (amnt_lives > 2)
+            surface->put_image(lives0, lives0.rect());
         }
       }
+      surface->put_image(name, name.rect());
+      surface->put_image(*galaxian_logo, galaxian_logo->rect());
+      surface->put_image(*high_s, high_s->rect());
+      surface->put_image(*score_s, score_s->rect());
+      surface->put_image(high, high.rect());
+      surface->put_rect(high_rect, ORANGE);
+      surface->put_image(score, score.rect());
+      surface->put_rect(score_rect, ORANGE);
+      surface->put_image(*wave_count, wave_count->rect());
     }
   }
+}
 
 
-  void Star::set_surface(Surface * s)
+void Background::setup_text()
+{
+  gameover.rect().x = W / 2 - 225;
+  gameover.rect().y = H / 2 - 100;
+  incoming_wave.rect().x = W / 2 - 325;
+  incoming_wave.rect().y = H / 2 - 100;
+  lives0.rect().x = W / 2 + 240;
+  lives0.rect().y = H - 35;
+  lives1.rect().x = W / 2 + 280;
+  lives1.rect().y = H - 35;
+  lives2.rect().x = W / 2 + 320;
+  lives2.rect().y = H - 35;
+  keyinput1.rect().x = W / 2 - 300;
+  keyinput1.rect().y = H / 2 - 100;
+  if (starting_screen)
   {
-    Star::s_ = s;
+    if (galaxian_logo != nullptr) delete galaxian_logo;
+    galaxian_logo = new Image("images/biggalaxian.png");
+    galaxian_logo->rect().x = W / 2 - 225;
+    galaxian_logo->rect().y = H / 2 - 200;
+    name.rect().x = W / 2 + 80;
+    name.rect().y = H / 2 - 60;
+    madeby.rect().x = W / 2 - 20;
+    madeby.rect().y = H / 2 - 60;
+
+    galactic_heroes.rect().x = W / 2 - 100;
+    galactic_heroes.rect().y = 25;
+    top10.rect().x = W / 2 - 70;
+    top10.rect().y = 70;
+    pos_score_name.rect().x = W / 2 - 235;
+    pos_score_name.rect().y = 115;
+
   }
-  void Background::reset()
+  else if (instructions_screen)
   {
-    switch_screen();
-    score_score = 0;
-    high_score = 0;
+    we_are_the_galaxians.rect().x = W / 2 - 250;
+    we_are_the_galaxians.rect().y = H / 2 - 300;
+    mission_destroy_aliens.rect().x = W / 2 - 275;
+    mission_destroy_aliens.rect().y = H / 2 - 225;
+    score_advance_table.rect().x = W / 2 - 280;
+    score_advance_table.rect().y = H / 2 - 100;
+    convoy_charger.rect().x = W / 2 - 250;
+    convoy_charger.rect().y = H / 2 - 50;
+    flagship_points.rect().x = W / 2 - 200;
+    flagship_points.rect().y = H / 2 + 25;
+    red_escort_points.rect().x = W / 2 - 200;
+    red_escort_points.rect().y = H / 2 + 100;
+    purple_points.rect().x = W / 2 - 200;
+    purple_points.rect().y = H / 2 + 175;
+    blue_points.rect().x = W / 2 - 200;
+    blue_points.rect().y = H / 2 + 250;
   }
-  void Background::draw_score_section()
-  {
-    surface->put_image(galactic_heroes, galactic_heroes.rect());
-    surface->put_image(top10, top10.rect());
-    surface->put_image(pos_score_name, pos_score_name.rect());
-    surface->put_rect(pos_r, WHITE);
-    surface->put_rect(score_r, WHITE);
-    surface->put_rect(name_r, WHITE);
-    surface->put_image(first, first.rect());
-    surface->put_image(*first_name, first_name->rect());
-    surface->put_image(*first_score, first_score->rect());
-    surface->put_image(second, second.rect());
-    surface->put_image(*second_name, second_name->rect());
-    surface->put_image(*second_score, second_score->rect());
-    surface->put_image(third, third.rect());
-    surface->put_image(*third_name, third_name->rect());
-    surface->put_image(*third_score, third_score->rect());
-    surface->put_image(fourth, fourth.rect());
-    surface->put_image(*fourth_name, fourth_name->rect());
-    surface->put_image(*fourth_score, fourth_score->rect());
-    surface->put_image(fifth, fifth.rect());
-    surface->put_image(*fifth_name, fifth_name->rect());
-    surface->put_image(*fifth_score, fifth_score->rect());
-    surface->put_image(sixth, sixth.rect());
-    surface->put_image(*sixth_name, sixth_name->rect());
-    surface->put_image(*sixth_score, sixth_score->rect());
-    surface->put_image(seventh, seventh.rect());
-    surface->put_image(*seventh_name, seventh_name->rect());
-    surface->put_image(*seventh_score, seventh_score->rect());
-    surface->put_image(eighth, eighth.rect());
-    surface->put_image(*eighth_name, eighth_name->rect());
-    surface->put_image(*eighth_score, eighth_score->rect());
-    surface->put_image(ninth, ninth.rect());
-    surface->put_image(*ninth_name, ninth_name->rect());
-    surface->put_image(*ninth_score, ninth_score->rect());
-    surface->put_image(tenth, tenth.rect());
-    surface->put_image(*tenth_name, tenth_name->rect());
-    surface->put_image(*tenth_score, tenth_score->rect());
+  else
+{
+    if (galaxian_logo != nullptr) delete galaxian_logo;
+    galaxian_logo = new Image("images/galaxian.png");
+    high.rect().x = 10;
+    high.rect().y = 5;
+    high_s->rect().x = high.rect().x;
+    high_s->rect().y = high.rect().y - 30;
+    score.rect().x = W - 100;
+    score.rect().y = 5;
+    score_s->rect().x = score.rect().x;
+    score_s->rect().y = score.rect().y - 30;
+    name.rect().x = W / 2 - 80;
+    name.rect().y = H - 20;
+    galaxian_logo->rect().x = W / 2 - 100;
+    galaxian_logo->rect().y = 5;
+    wave_count->rect().x = 5;
+    wave_count->rect().y = H - 20;
   }
-  void Background::update_cursor_section()
+}
+
+
+void Background::setup_rects()
+{
+  if (!starting_screen)
   {
-    if (cursor != nullptr) delete cursor;
-    cursor = new Image("images/clicker.png");
-    cursor->rect().x = W / 2 - 310;
-    cursor->rect().y = cursor_y;
-    if (play != nullptr) delete play;
-    play = (cursor_y == H / 2 + 90 ? new Image(big.render("Play", WHITE)) : new Image(big.render("Play", GRAY)));
-    play->rect().y = H / 2 + 80;
-    play->rect().x = W / 2 - 250;
-    if (instructions != nullptr) delete instructions;
-    instructions = (cursor_y == H / 2 + 160 ? new Image(big.render("Instructions", WHITE)) : new Image(big.render("Instructions", GRAY)));
-    instructions->rect().y = H / 2 + 150;
-    instructions->rect().x = W / 2 - 258;
-    if (leaderboards != nullptr) delete leaderboards;
-    leaderboards = (cursor_y == H / 2 + 230 ? new Image(big.render("Leaderboards", WHITE)) : new Image(big.render("Leaderboards", GRAY)));
-    leaderboards->rect().y = H / 2 + 220;
-    leaderboards->rect().x = W / 2 - 250;
-    if (exit != nullptr) delete exit;
-    exit = (cursor_y == H / 2 + 300 ? new Image(big.render("Exit", WHITE)) : new Image(big.render("Exit", GRAY)));
-    exit->rect().y = H / 2 + 290;
-    exit->rect().x = W / 2 - 250;
+    high_rect.x = 10;
+    high_rect.y = 20;
+    high_rect.w = 96;
+    high_rect.h = 2;
+
+    score_rect.x = W - 100;
+    score_rect.y = 20;
+    score_rect.w = 60;
+    score_rect.h = 2;
   }
-  void Background::draw_cursor_section()
-  {
-    surface->put_image(*cursor, cursor->rect());
-    surface->put_image(*play, play->rect());
-    surface->put_image(*instructions, instructions->rect());
-    surface->put_image(*leaderboards, leaderboards->rect());
-    surface->put_image(*exit, exit->rect());
+  else
+{
+    pos_r.x = W / 2 - 234;
+    first.rect().x = pos_r.x - 3;
+    second.rect().x = pos_r.x - 3;
+    third.rect().x = pos_r.x - 3;
+    fourth.rect().x = pos_r.x - 3;
+    fifth.rect().x = pos_r.x - 3;
+    sixth.rect().x = pos_r.x - 3;
+    seventh.rect().x = pos_r.x - 3;
+    eighth.rect().x = pos_r.x - 3;
+    ninth.rect().x = pos_r.x - 3;
+    tenth.rect().x = pos_r.x - 3;
+    pos_r.y = 130;
+    first.rect().y = pos_r.y + 40;
+    second.rect().y = pos_r.y + 120;
+    third.rect().y = pos_r.y + 200;
+    fourth.rect().y = pos_r.y + 280;
+    fifth.rect().y = pos_r.y + 360;
+    sixth.rect().y = pos_r.y + 440;
+    seventh.rect().y = pos_r.y + 520;
+    eighth.rect().y = pos_r.y + 600;
+    ninth.rect().y = pos_r.y + 680;
+    tenth.rect().y = pos_r.y + 760;
+    pos_r.w = 35;
+    pos_r.h = 2;
+
+    score_r.x = W / 2 - 42;
+    score_r.y = 130;
+    score_r.w = 59;
+    score_r.h = 2;
+
+    name_r.x = W / 2 + 174;
+    name_r.y = 130;
+    name_r.w = 47;
+    name_r.h = 2;
   }
-  void Background::get_names()
+}
+
+Star::Star() :
+  x(rand() % W), y(rand() % H), dx(0), dy(1), 
+  r(rand() % 256), g(rand() % 256), b(rand() % 256),
+  timer(0), on_screen(true)
+{}
+
+
+void Star::update()
+{
+  if (on_screen)
   {
-    std::ifstream f("scores.txt", std::ios::in);
-    f >> name1;
-    if (!f.good())
+    if (rand() % 1000 == 0) on_screen = false;
+    if (y + 3 >= H)
     {
-      name1 = "N/A";
-      score1 = "N/A";
-      name2 = "N/A";
-      score2 = "N/A";
-      name3 = "N/A";
-      score3 = "N/A";
-      name4 = "N/A";
-      score4 = "N/A";
-      name5 = "N/A";
-      score5 = "N/A";
-      name6 = "N/A";
-      score6 = "N/A";
-      name7 = "N/A";
-      score7 = "N/A";
-      name8 = "N/A";
-      score8 = "N/A";
-      name9 = "N/A";
-      score9 = "N/A";
-      name10 = "N/A";
-      score10 = "N/A";
-      return;
+      y = 0;
+      x = rand() % W;
     }
-    f >> score1;
-    if (!f.good())
+    y += dy;
+    x += dx;
+  }
+  else
+{
+    timer++;
+    if (y + 3 >= H)
     {
-      score1 = "N/A";
-      name2 = "N/A";
-      score2 = "N/A";
-      name3 = "N/A";
-      score3 = "N/A";
-      name4 = "N/A";
-      score4 = "N/A";
-      name5 = "N/A";
-      score5 = "N/A";
-      name6 = "N/A";
-      score6 = "N/A";
-      name7 = "N/A";
-      score7 = "N/A";
-      name8 = "N/A";
-      score8 = "N/A";
-      name9 = "N/A";
-      score9 = "N/A";
-      name10 = "N/A";
-      score10 = "N/A";
-      return;
+      y = 0;
+      x = rand() % W;
     }
-    f >> name2;
-    if (!f.good())
+    y += dy;
+    x += dx;
+    if (timer > 100)
     {
-      name2 = "N/A";
-      score2 = "N/A";
-      name3 = "N/A";
-      score3 = "N/A";
-      name4 = "N/A";
-      score4 = "N/A";
-      name5 = "N/A";
-      score5 = "N/A";
-      name6 = "N/A";
-      score6 = "N/A";
-      name7 = "N/A";
-      score7 = "N/A";
-      name8 = "N/A";
-      score8 = "N/A";
-      name9 = "N/A";
-      score9 = "N/A";
-      name10 = "N/A";
-      score10 = "N/A";
-      return;
+      on_screen = true;
+      timer = 0;
     }
-    f >> score2;
-    if (!f.good())
+  }
+}
+
+
+void Star::draw()
+{
+  if (on_screen)
+  {
+    for (int i = 0; i < 2; ++i)
     {
-      score2 = "N/A";
-      name3 = "N/A";
-      score3 = "N/A";
-      name4 = "N/A";
-      score4 = "N/A";
-      name5 = "N/A";
-      score5 = "N/A";
-      name6 = "N/A";
-      score6 = "N/A";
-      name7 = "N/A";
-      score7 = "N/A";
-      name8 = "N/A";
-      score8 = "N/A";
-      name9 = "N/A";
-      score9 = "N/A";
-      name10 = "N/A";
-      score10 = "N/A";
-      return;
+      for (int j = 0; j < 2; ++j)
+      {
+        s_->put_pixel(x + i, y + j, r, g, b);
+      }
     }
-    f >> name3;
-    if (!f.good())
-    {
-      name3 = "N/A";
-      score3 = "N/A";
-      name4 = "N/A";
-      score4 = "N/A";
-      name5 = "N/A";
-      score5 = "N/A";
-      name6 = "N/A";
+  }
+}
+
+
+void Star::set_surface(Surface * s)
+{
+  Star::s_ = s;
+}
+void Background::reset()
+{
+  switch_screen();
+  score_score = 0;
+  high_score = 0;
+}
+void Background::draw_score_section()
+{
+  surface->put_image(galactic_heroes, galactic_heroes.rect());
+  surface->put_image(top10, top10.rect());
+  surface->put_image(pos_score_name, pos_score_name.rect());
+  surface->put_rect(pos_r, WHITE);
+  surface->put_rect(score_r, WHITE);
+  surface->put_rect(name_r, WHITE);
+  surface->put_image(first, first.rect());
+  surface->put_image(*first_name, first_name->rect());
+  surface->put_image(*first_score, first_score->rect());
+  surface->put_image(second, second.rect());
+  surface->put_image(*second_name, second_name->rect());
+  surface->put_image(*second_score, second_score->rect());
+  surface->put_image(third, third.rect());
+  surface->put_image(*third_name, third_name->rect());
+  surface->put_image(*third_score, third_score->rect());
+  surface->put_image(fourth, fourth.rect());
+  surface->put_image(*fourth_name, fourth_name->rect());
+  surface->put_image(*fourth_score, fourth_score->rect());
+  surface->put_image(fifth, fifth.rect());
+  surface->put_image(*fifth_name, fifth_name->rect());
+  surface->put_image(*fifth_score, fifth_score->rect());
+  surface->put_image(sixth, sixth.rect());
+  surface->put_image(*sixth_name, sixth_name->rect());
+  surface->put_image(*sixth_score, sixth_score->rect());
+  surface->put_image(seventh, seventh.rect());
+  surface->put_image(*seventh_name, seventh_name->rect());
+  surface->put_image(*seventh_score, seventh_score->rect());
+  surface->put_image(eighth, eighth.rect());
+  surface->put_image(*eighth_name, eighth_name->rect());
+  surface->put_image(*eighth_score, eighth_score->rect());
+  surface->put_image(ninth, ninth.rect());
+  surface->put_image(*ninth_name, ninth_name->rect());
+  surface->put_image(*ninth_score, ninth_score->rect());
+  surface->put_image(tenth, tenth.rect());
+  surface->put_image(*tenth_name, tenth_name->rect());
+  surface->put_image(*tenth_score, tenth_score->rect());
+}
+void Background::update_cursor_section()
+{
+  if (cursor != nullptr) delete cursor;
+  cursor = new Image("images/clicker.png");
+  cursor->rect().x = W / 2 - 310;
+  cursor->rect().y = cursor_y;
+  if (play != nullptr) delete play;
+  play = (cursor_y == H / 2 + 90 ? new Image(big.render("Play", WHITE)) : new Image(big.render("Play", GRAY)));
+  play->rect().y = H / 2 + 80;
+  play->rect().x = W / 2 - 250;
+  if (instructions != nullptr) delete instructions;
+  instructions = (cursor_y == H / 2 + 160 ? new Image(big.render("Instructions", WHITE)) : new Image(big.render("Instructions", GRAY)));
+  instructions->rect().y = H / 2 + 150;
+  instructions->rect().x = W / 2 - 258;
+  if (leaderboards != nullptr) delete leaderboards;
+  leaderboards = (cursor_y == H / 2 + 230 ? new Image(big.render("Leaderboards", WHITE)) : new Image(big.render("Leaderboards", GRAY)));
+  leaderboards->rect().y = H / 2 + 220;
+  leaderboards->rect().x = W / 2 - 250;
+  if (exit != nullptr) delete exit;
+  exit = (cursor_y == H / 2 + 300 ? new Image(big.render("Exit", WHITE)) : new Image(big.render("Exit", GRAY)));
+  exit->rect().y = H / 2 + 290;
+  exit->rect().x = W / 2 - 250;
+}
+void Background::draw_cursor_section()
+{
+  surface->put_image(*cursor, cursor->rect());
+  surface->put_image(*play, play->rect());
+  surface->put_image(*instructions, instructions->rect());
+  surface->put_image(*leaderboards, leaderboards->rect());
+  surface->put_image(*exit, exit->rect());
+}
+void Background::get_names()
+{
+  std::ifstream f("scores.txt", std::ios::in);
+  f >> name1;
+  if (!f.good())
+  {
+    name1 = "N/A";
+    score1 = "N/A";
+    name2 = "N/A";
+    score2 = "N/A";
+    name3 = "N/A";
+    score3 = "N/A";
+    name4 = "N/A";
+    score4 = "N/A";
+    name5 = "N/A";
+    score5 = "N/A";
+    name6 = "N/A";
+    score6 = "N/A";
+    name7 = "N/A";
+    score7 = "N/A";
+    name8 = "N/A";
+    score8 = "N/A";
+    name9 = "N/A";
+    score9 = "N/A";
+    name10 = "N/A";
+    score10 = "N/A";
+    return;
+  }
+  f >> score1;
+  if (!f.good())
+  {
+    score1 = "N/A";
+    name2 = "N/A";
+    score2 = "N/A";
+    name3 = "N/A";
+    score3 = "N/A";
+    name4 = "N/A";
+    score4 = "N/A";
+    name5 = "N/A";
+    score5 = "N/A";
+    name6 = "N/A";
+    score6 = "N/A";
+    name7 = "N/A";
+    score7 = "N/A";
+    name8 = "N/A";
+    score8 = "N/A";
+    name9 = "N/A";
+    score9 = "N/A";
+    name10 = "N/A";
+    score10 = "N/A";
+    return;
+  }
+  f >> name2;
+  if (!f.good())
+  {
+    name2 = "N/A";
+    score2 = "N/A";
+    name3 = "N/A";
+    score3 = "N/A";
+    name4 = "N/A";
+    score4 = "N/A";
+    name5 = "N/A";
+    score5 = "N/A";
+    name6 = "N/A";
+    score6 = "N/A";
+    name7 = "N/A";
+    score7 = "N/A";
+    name8 = "N/A";
+    score8 = "N/A";
+    name9 = "N/A";
+    score9 = "N/A";
+    name10 = "N/A";
+    score10 = "N/A";
+    return;
+  }
+  f >> score2;
+  if (!f.good())
+  {
+    score2 = "N/A";
+    name3 = "N/A";
+    score3 = "N/A";
+    name4 = "N/A";
+    score4 = "N/A";
+    name5 = "N/A";
+    score5 = "N/A";
+    name6 = "N/A";
+    score6 = "N/A";
+    name7 = "N/A";
+    score7 = "N/A";
+    name8 = "N/A";
+    score8 = "N/A";
+    name9 = "N/A";
+    score9 = "N/A";
+    name10 = "N/A";
+    score10 = "N/A";
+    return;
+  }
+  f >> name3;
+  if (!f.good())
+  {
+    name3 = "N/A";
+    score3 = "N/A";
+    name4 = "N/A";
+    score4 = "N/A";
+    name5 = "N/A";
+    score5 = "N/A";
+    name6 = "N/A";
     score6 = "N/A";
     name7 = "N/A";
     score7 = "N/A";

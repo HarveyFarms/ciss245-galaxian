@@ -4,12 +4,12 @@
 #include <iostream>
 #include <vector>
 #include "Object.h"
-#include "Laser.h"
 
 class Enemy : public Object
 {
 public:
   Enemy(const char * s, int t) :
+    counter(0), delete_me(false),
     attacking(false),
     Object(new Image(s)),
     amount(t), got_hit(false), recovering(false),
@@ -20,6 +20,10 @@ public:
     dx() = 1;
     edx() = 1;
     dy() = 0;
+  }
+  void cleanup(int t)
+  {
+    lasers.erase(lasers.begin() + t);
   }
   bool close_to_bottom() { return y() > W / 2; }
   void extra()
@@ -36,11 +40,22 @@ public:
   {
     if (lasers.size() < 3) lasers.push_back(Laser(x() + (w() / 2), y(), false));
   }
+  int counter;
+  bool delete_me;
   virtual void extra_update(bool square, bool dont_attack)
   {
+    if (counter > 0)
+  {
+      counter++;
+      if (counter > 200)
+      {
+        counter = 0;
+        delete_me = true;
+      }
+    }
     if (attacking)
     {
-      if (rand() % 100 == 0 && lasers.size() < 3)
+      if (rand() % 100 == 0 && lasers.size() < 3 && counter == 0)
       {
         lasers.push_back(Laser(x() + (w() / 2), y(), false));
       }
@@ -125,10 +140,6 @@ public:
   {
     return 1;
   }
-  bool hit_by_laser(const Laser & l)
-  {
-    return (x() <= l.x && l.x <= x() + w() && y() <= l.y && l.y <= y() + h());
-  }
   void save(int x, int y)
   {
     savex = x;
@@ -142,7 +153,7 @@ public:
   int savex, savey;
   int amount;
   bool attacking;
-  void switch_hit_status() { got_hit = true; }
+  void switch_hit_status() { is_hit =  true; got_hit = true; }
   bool has_been_hit() { return got_hit; }
   bool got_hit;
   bool recovering;

@@ -100,6 +100,9 @@ public:
     setup_text();
   }
   bool on_instructions() { return instructions_screen; }
+  std::string & waves_str() { return waves_string; }
+  bool inc_wave;
+  int amnt_lives;
 private:
   // methods to setup text
   void setup_text();
@@ -125,6 +128,12 @@ private:
   Font big;
 
   // text
+  std::string waves_string;
+  Image* wave_count;
+  Image incoming_wave;
+  Image lives0;
+  Image lives1;
+  Image lives2;
   Image high;
   int high_score;
   Image* high_s;

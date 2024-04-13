@@ -2,13 +2,14 @@
 #define OBJECT_H
 
 #include "Surface.h"
+#include "Laser.h"
 #include "Constants.h"
 
 class Object
 {
 public:
   Object()
-    : image(NULL)
+    : image(NULL), is_hit(false)
   {}
   Object(Image * s)
   : image(s), assembled(true)
@@ -55,7 +56,8 @@ public:
   }
   virtual void draw()
   {
-    s_->put_image(*image, image->rect());
+    if (!is_hit)
+      s_->put_image(*image, image->rect());
     extra();
   }
   virtual void extra()
@@ -92,13 +94,18 @@ public:
   {
     assembled = !assembled;
   }
+  bool is_hit;
   bool collided_w_object(Object * o)
   {
-    if (x() <= o->x() && o->x() <= x() + w() || x() <= o->x() + o->w() && o->x() + o->w() <= x() + w())
+    if (x() <= o->x() && o->x() <= x() + w() || x() <= o->x() + o->w() && o->x() + o->w() <= x() + w() && !is_hit)
     {
       return (y() <= o->y() && o->y() <= y() + h() || y() <= o->y() + o->h() && o->y() + o->h() <= y() + h());
     }
     else return false;
+  }
+  bool hit_by_laser(const Laser & l)
+  {
+    return (x() <= l.x && l.x <= x() + w() && y() <= l.y && l.y <= y() + h());
   }
   static Surface * s_;
   Image* image;
