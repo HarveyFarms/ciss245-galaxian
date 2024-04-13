@@ -11,7 +11,7 @@ public:
   {}
   virtual int rand_amnt() 
   {
-    return 4000;
+    return 1000;
   }
   bool is_flag() { return true; }
 };

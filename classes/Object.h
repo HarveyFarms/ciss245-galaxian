@@ -9,7 +9,7 @@ class Object
 {
 public:
   Object()
-    : image(NULL), is_hit(false)
+  : image(NULL), is_hit(false)
   {}
   Object(Image * s)
   : image(s), assembled(true)
@@ -103,9 +103,13 @@ public:
     }
     else return false;
   }
-  bool hit_by_laser(const Laser & l)
+  bool hit_by_laser(const Laser & o)
   {
-    return (x() <= l.x && l.x <= x() + w() && y() <= l.y && l.y <= y() + h());
+    if ((x() <= o.x && o.x <= x() + w() || x() <= o.x + o.w && o.x + o.w <= x() + w()) || (o.x <= x() && x() <= o.x + o.w || o.x <= x() + w() && x() + w() <= o.x + o.w) && !is_hit)
+    {
+      return ((y() <= o.y && o.y <= y() + h() || y() <= o.y + o.h && o.y + o.h <= y() + h()) || (o.y <= y() && y() <= o.y + o.h || o.y <= y() + h() && y() + h() <= o.y + o.h));
+    }
+    else return false;
   }
   static Surface * s_;
   Image* image;
