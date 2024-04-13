@@ -1,7 +1,2 @@
 khh 4060
-<<<<<<< HEAD
 leb 3550
-rsh 2590
-=======
-leh 3550
->>>>>>> db4da32bf1b78cf45513d904bd4d56f941e2abe0
