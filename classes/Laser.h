@@ -12,9 +12,15 @@ class Laser
   {}
     Laser(int x_, int y_, bool good = true) :
     good_laser(good),
-    x(x_), y(y_ + 5), w(2), h(10), dy(-5)
+    x(x_), y(y_ + 5), w(2), h(10), dy(-LASER_SPEED)
   {
-    if (!good) dy = 5;
+    if (good)
+    {
+      w = LASER_WIDTH_FOR_USER;
+      h = LASER_LENGTH_FOR_USER;
+    }
+    if (!good) 
+      dy = LASER_SPEED;
   }
   void draw(Surface * s_)
   {
