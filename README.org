@@ -1,0 +1,5 @@
+#+title: My Galaxian Project
+
+* todo
+- put sounds in
+- describe project in README.org when done with project
