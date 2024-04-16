@@ -1,4 +1,5 @@
 #+title: My Galaxian Project
+#+date: <2024-04-25>
 #+author: Ryan Harvey
 
 * todo
