@@ -121,6 +121,6 @@ public:
   }
   Enemy * master;
   bool on_own;
-  int rand_amnt() { return 1000; }
+  int rand_amnt() { return 1500; }
 };
 #endif

@@ -10,7 +10,7 @@ public:
   {}
   virtual int rand_amnt() 
   {
-    return 600;
+    return 1200;
   }
 };
 #endif
