@@ -15,6 +15,9 @@ Game::Game() :
   surface(new Surface(W, H)),
   kp(get_keypressed()),
   keyboard(event),
+  game_music(Music("sounds/GameLoop.ogg")),
+  shoot(Sound("sounds/laser.wav")),
+  explode(Sound("sounds/explosion.wav")),
   timer(0),
   amount_ships(3),
   paused(false),
@@ -46,6 +49,7 @@ Game::~Game()
 void Game::run()
 {
   int start, end, dt, RATE = s60FPS;
+  game_music.play();
   while (GAME_IS_RUNNING && !user_quits())
   {
     start = getTicks();
@@ -63,6 +67,7 @@ void Game::run()
       if (dt > 0) delay(dt);
     }
   }
+  game_music.stop();
 
   delay(50);
 }
@@ -81,7 +86,8 @@ void Game::get_input()
       else Galaxip->dx() = 0;
       if (kp[SPACE] && !pressed)
       {
-        Galaxip->shoot();
+        if (Galaxip->shoot())
+          shoot.play();
         pressed = true;
       }
       else if (!kp[SPACE] && pressed)
@@ -358,6 +364,7 @@ void Game::laser_hits_enemy()
     {
       if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]) && !waves->get_enemies()[j]->is_hit)
       {
+        explode.play();
         if (waves->get_enemies()[j]->is_attacking()) 
         {
           if (!waves->get_enemies()[j]->is_flag())
@@ -396,6 +403,7 @@ void Game::laser_hits_ship()
     {
       if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]))
       {
+        explode.play();
         explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
         waves->get_enemies()[i]->cleanup(j--);
         --amount_ships;

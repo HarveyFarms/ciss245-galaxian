@@ -1,17 +1,17 @@
 d:	main.cpp
-	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses; ./a.out
+	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses -Isounds; ./a.out
 
 t:	main.cpp
-	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses
+	g++ main.cpp src/*.cpp src/*.c classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses -Isounds
 
 a asan:	main.cpp
-	g++ main.cpp src/*.cpp src/*.c classes/*.cpp -g -fsanitize=address `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses
-
-c clean:
-	rm a.out
+	g++ main.cpp src/*.cpp src/*.c -g -fsanitize=address classes/*.cpp `sdl-config --cflags --libs` -lSDL_image -lSDL_mixer -lSDL_ttf -Iincludes -Iclasses -Isounds
 
 r run:
 	./a.out
+
+c clean:
+	rm ./a.out
 
 git:
 	git add -A ; git commit -m "sync" ; git push

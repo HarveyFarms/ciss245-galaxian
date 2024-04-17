@@ -29,9 +29,14 @@ class Ship : public Object
       s_->put_image(*image, image->rect());
     extra();
   }
-  void shoot()
+  bool shoot()
   {
-    if (lasers.size() < AMOUNT_OF_SHOOTABLE_LASERS) lasers.push_back(Laser(x() + (w() / 2), y()));
+    if (lasers.size() < AMOUNT_OF_SHOOTABLE_LASERS) 
+    {
+      lasers.push_back(Laser(x() + (w() / 2), y()));
+      return true;
+    }
+    return false;
   }
   void cleanup(int t)
   {

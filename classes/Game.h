@@ -84,6 +84,8 @@ private:
   Event event;
   KeyPressed kp;
   Keyboard keyboard;
+  Music game_music;
+  Sound shoot, explode;
 
   // extra
   int timer;
