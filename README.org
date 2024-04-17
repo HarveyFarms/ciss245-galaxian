@@ -1,7 +1,0 @@
-#+title: My Galaxian Project
-#+date: <2024-04-25>
-#+author: Ryan Harvey
-
-* todo
-- put sounds in
-- describe project in README.org when done with project
