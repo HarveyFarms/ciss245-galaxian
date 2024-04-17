@@ -29,7 +29,7 @@ public:
       attacking = true;
       passed0 = true;
     }
-    if (rand() % rand_amnt() == 0 && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack)
+    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack)
     {
       attacking = true;
       passed0 = true;

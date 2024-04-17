@@ -116,6 +116,16 @@ void Wave::decrease(int t)
 void Wave::reset()
 {
   ++wave_amount;
+  if (wave_amount <= 10)
+  {
+    RANDOM_FOR_ENEMY = 2500 - (wave_amount * 200);
+    RANDOM_FOR_FLAG = 3500 - (wave_amount * 200);
+  }
+  else
+{
+    RANDOM_FOR_ENEMY = 200;
+    RANDOM_FOR_FLAG = 300;
+  }
   coming_in = true;
   x = 0;
   y = 100;

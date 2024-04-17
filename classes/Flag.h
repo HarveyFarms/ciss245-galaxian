@@ -12,7 +12,7 @@ public:
   bool is_flag() { return true; }
   virtual int rand_amnt() 
   {
-    return 3000;
+    return (RANDOM_FOR_FLAG < 100 ? 100 : RANDOM_FOR_FLAG);
   }
 };
 #endif

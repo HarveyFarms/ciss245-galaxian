@@ -121,7 +121,7 @@ public:
       edx() *= -1;
     }
     passed0 = false;
-    if (rand() % rand_amnt() == 0 && !attacking && !recovering && breaktime == 0 && !dont_attack)
+    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && !recovering && breaktime == 0 && !dont_attack)
     {
       attacking = true;
       passed0 = true;
@@ -138,7 +138,7 @@ public:
   }
   virtual int rand_amnt() 
   {
-    return 2000;
+    return (RANDOM_FOR_ENEMY < 100 ? 100 : RANDOM_FOR_ENEMY);
   }
   void save(int x, int y)
   {

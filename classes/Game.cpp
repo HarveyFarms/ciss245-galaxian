@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 Surface * Object::s_(NULL);
 
 Game::Game() :
@@ -82,7 +83,7 @@ void Game::get_input()
       if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
       else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
       else if (kp[TAB])
-          amount_ships--;
+        amount_ships--;
       else Galaxip->dx() = 0;
       if (kp[SPACE] && !pressed)
       {
@@ -365,6 +366,8 @@ void Game::laser_hits_enemy()
       if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]) && !waves->get_enemies()[j]->is_hit)
       {
         explode.play();
+        RANDOM_FOR_ENEMY -= 75;
+        RANDOM_FOR_FLAG -= 100;
         if (waves->get_enemies()[j]->is_attacking()) 
         {
           if (!waves->get_enemies()[j]->is_flag())
@@ -387,6 +390,8 @@ void Game::enemy_hits_ship()
     if (Galaxip->collided_w_object(waves->get_enemies()[j]) && waves->get_enemies()[j]->counter == 0)
     {
       explode.play();
+      RANDOM_FOR_ENEMY -= 40;
+      RANDOM_FOR_FLAG -= 50;
       explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
       waves->decrease(j--);
       explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
