@@ -138,7 +138,7 @@ public:
   }
   virtual int rand_amnt() 
   {
-    return 1;
+    return 2000;
   }
   void save(int x, int y)
   {

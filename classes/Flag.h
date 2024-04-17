@@ -9,10 +9,10 @@ public:
   Flag() : 
     Enemy("images/GalaxianFlagship.gif", 60)
   {}
+  bool is_flag() { return true; }
   virtual int rand_amnt() 
   {
-    return 2000;
+    return 3000;
   }
-  bool is_flag() { return true; }
 };
 #endif

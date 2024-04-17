@@ -8,9 +8,5 @@ public:
   Blue() : 
     Enemy("images/GalaxianAquaAlien.gif", 30)
   {}
-  virtual int rand_amnt() 
-  {
-    return 1200;
-  }
 };
 #endif
