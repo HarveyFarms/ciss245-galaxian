@@ -18,3 +18,6 @@ git:
 
 p:
 	git pull
+
+g grant:
+	cd ~/galaxian_clone/ ; make r ; cd ~/mygalaxian/ ; clear

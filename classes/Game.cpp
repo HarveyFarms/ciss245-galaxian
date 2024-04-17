@@ -386,6 +386,7 @@ void Game::enemy_hits_ship()
   {
     if (Galaxip->collided_w_object(waves->get_enemies()[j]) && waves->get_enemies()[j]->counter == 0)
     {
+      explode.play();
       explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
       waves->decrease(j--);
       explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
