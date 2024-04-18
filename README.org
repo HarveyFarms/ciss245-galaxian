@@ -2,6 +2,4 @@
 
 - not finished yet
 
-need to make sure enemy attacks don't bug out somehow
-
 make sure incoming wave can't let the flag ships be killed

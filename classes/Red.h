@@ -86,7 +86,7 @@ public:
       }
     }
     passed1 = false;
-    if (outside_bottom())
+    if (outside_bottom() && !is_hit)
     {
       attacking = false;
       breaktime = 1;

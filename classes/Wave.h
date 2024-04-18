@@ -22,6 +22,7 @@ public:
   int wave_amount;
 private:
   bool move;
+  int count_checker;
   int count;
   bool show_rect_;
   Surface * surface;

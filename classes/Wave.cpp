@@ -69,6 +69,11 @@ void Wave::set_surface(Surface * s)
 
 void Wave::update()
 {
+  if (count > 1)
+    count_checker++;
+  else
+    count_checker = 0;
+  if (count_checker > 200) count = 0;
   if (enemies.size() == 0) wave_has_died = true;
   x += dx;
   if (x <= 0 || x + w >= W)
@@ -132,47 +137,7 @@ void Wave::reset()
   w = 440;
   h = 260;
   enemies.resize(46);
-  for (int i = 0; i < 2; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Flag;
-    enemies[i]->breaktime = 20;
-    enemies[i]->x() = (i * 135) + 135;
-    enemies[i]->dx() = 0;
-    enemies[i]->y() = -32;
-    enemies[i]->save(enemies[i]->x(), y);
-  }
-  for (int i = 2; i < 5; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[0]);
-    enemies[i]->breaktime = 55;
-    enemies[i]->dx() = 0;
-    enemies[i]->x() = ((i-2) * 45) + 90;
-    enemies[i]->y() = -32;
-    enemies[i]->save(enemies[i]->x(), y + 45);
-  }
-  for (int i = 5; i < 8; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[1]);
-    enemies[i]->breaktime = 55;
-    enemies[i]->dx() = 0;
-    enemies[i]->x() = ((i-2) * 45) + 90;
-    enemies[i]->y() = -32;
-    enemies[i]->save(enemies[i]->x(), y + 45);
-  }
-  for (int i = 8; i < 16; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Purple;
-    enemies[i]->breaktime = 75;
-    enemies[i]->dx() = 0;
-    enemies[i]->x() = (i % 8 * 45) + 45;
-    enemies[i]->y() = -32;
-    enemies[i]->save(enemies[i]->x(), y + 90);
-  }
-  for (int i = 16; i < 46; ++i)
+  for (int i = 0; i < 30; ++i)
   {
     if (enemies[i] != nullptr) delete enemies[i];
     enemies[i] = new Blue;
@@ -182,6 +147,46 @@ void Wave::reset()
     enemies[i]->x() = (i % 10 * 45);
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 135 + j * 45);
+  }
+  for (int i = 30; i < 38; ++i)
+  {
+    if (enemies[i] != nullptr) delete enemies[i];
+    enemies[i] = new Purple;
+    enemies[i]->breaktime = 75;
+    enemies[i]->dx() = 0;
+    enemies[i]->x() = (i % 8 * 45) + 45;
+    enemies[i]->y() = -32;
+    enemies[i]->save(enemies[i]->x(), y + 90);
+  }
+  for (int i = 44; i < 46; ++i)
+  {
+    if (enemies[i] != nullptr) delete enemies[i];
+    enemies[i] = new Flag;
+    enemies[i]->breaktime = 20;
+    enemies[i]->x() = (i % 2 * 135) + 135;
+    enemies[i]->dx() = 0;
+    enemies[i]->y() = -32;
+    enemies[i]->save(enemies[i]->x(), y);
+  }
+  for (int i = 38; i < 41; ++i)
+  {
+    if (enemies[i] != nullptr) delete enemies[i];
+    enemies[i] = new Red(enemies[44]);
+    enemies[i]->breaktime = 55;
+    enemies[i]->dx() = 0;
+    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->y() = -32;
+    enemies[i]->save(enemies[i]->x(), y + 45);
+  }
+  for (int i = 41; i < 44; ++i)
+  {
+    if (enemies[i] != nullptr) delete enemies[i];
+    enemies[i] = new Red(enemies[45]);
+    enemies[i]->breaktime = 55;
+    enemies[i]->dx() = 0;
+    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->y() = -32;
+    enemies[i]->save(enemies[i]->x(), y + 45);
   }
   wave_has_died = false;
 }
