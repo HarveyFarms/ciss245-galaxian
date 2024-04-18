@@ -73,7 +73,7 @@ void Wave::update()
     count_checker++;
   else
     count_checker = 0;
-  if (count_checker > 200) count = 0;
+  if (count_checker > 400) count = 0;
   if (enemies.size() == 0) wave_has_died = true;
   x += dx;
   if (x <= 0 || x + w >= W)
@@ -92,6 +92,7 @@ void Wave::update()
       continue;
     }
     if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
+    std::cout << "amount of enemies on screen: " << count << '\n';
     if (count <= 1) // count is for controlling the amnt of enemies on the screen
       enemies[i]->update(move, false);
     else

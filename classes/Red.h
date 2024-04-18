@@ -67,6 +67,8 @@ public:
       }
       else
     {
+        doing_sin_curve = master->doing_sin_curve;
+        going_left = master->going_left;
         dx() = master->dx();
         dy() = master->dy();
       }

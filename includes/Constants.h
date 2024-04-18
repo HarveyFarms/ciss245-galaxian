@@ -10,7 +10,7 @@ const int GAME_IS_RUNNING = 1;
 const int AMOUNT_OF_SHOOTABLE_LASERS = 3;
 const int LASER_SPEED = 8;
 const int LASER_WIDTH_FOR_USER = 2;
-const int LASER_LENGTH_FOR_USER = 10;
+const int LASER_LENGTH_FOR_USER = 6;
 extern int RANDOM_FOR_ENEMY;
 extern int RANDOM_FOR_FLAG;
 
