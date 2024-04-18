@@ -94,7 +94,7 @@ void Wave::update()
       continue;
     }
     if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
-    if (count <= wave_amount) // count is for controlling the amnt of enemies on the screen
+    if (count < wave_amount) // count is for controlling the amnt of enemies on the screen
       enemies[i]->update(move, false);
     else
       enemies[i]->update(move, true);

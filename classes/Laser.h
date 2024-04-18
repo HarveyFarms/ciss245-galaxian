@@ -18,13 +18,18 @@ class Laser
     {
       w = LASER_WIDTH_FOR_USER;
       h = LASER_LENGTH_FOR_USER;
+      the_lasers_color = USER_LASER_COLOR;
+    }
+    else
+    {
+      the_lasers_color = ENEMY_LASER_COLOR;
     }
     if (!good) 
       dy = LASER_SPEED;
   }
   void draw(Surface * s_)
   {
-    s_->put_rect(x, y, w, h, RED);
+    s_->put_rect(x, y, w, h, the_lasers_color);
   }
   bool is_good() { return good_laser; }
   bool on_screen()
@@ -35,5 +40,6 @@ class Laser
   }
   bool good_laser;
   int x, y, w, h, dy;
+  Color the_lasers_color;
 };
 #endif
