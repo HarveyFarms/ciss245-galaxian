@@ -1,5 +1,1 @@
 #+title: Welcome to my Galaxian!
-
-- not finished yet
-
-make sure incoming wave can't let the flag ships be killed
