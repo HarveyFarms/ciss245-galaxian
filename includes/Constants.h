@@ -16,9 +16,9 @@ const float PI = 3.14159;
 // for user's lasers
 const Color USER_LASER_COLOR = {255, 255, 0, 0};
 const Color ENEMY_LASER_COLOR = {255, 0, 0, 0};
-const int AMOUNT_OF_SHOOTABLE_LASERS = 3;
 const int LASER_SPEED = 8;
-const int LASER_WIDTH_FOR_USER = 2;
+const int AMOUNT_OF_SHOOTABLE_LASERS = 30;
+const int LASER_WIDTH_FOR_USER = 20;
 const int LASER_LENGTH_FOR_USER = 15;
 
 // mutable global variables

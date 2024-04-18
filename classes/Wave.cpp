@@ -10,46 +10,41 @@ Wave::Wave()
   w = 440;
   h = 260;
   enemies.resize(46);
-  for (int i = 0; i < 2; ++i)
+  for (int i = 0; i < 30; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Flag;
-    enemies[i]->x() = (i * 135) + 135;
-    enemies[i]->y() = y;
-    enemies[i]->save(enemies[i]->x(), enemies[i]->y());
-  }
-  for (int i = 2; i < 5; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[0]);
-    enemies[i]->x() = ((i-2) * 45) + 90;
-    enemies[i]->y() = y + 45;
-    enemies[i]->save(enemies[i]->x(), enemies[i]->y());
-  }
-  for (int i = 5; i < 8; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[1]);
-    enemies[i]->x() = ((i-2) * 45) + 90;
-    enemies[i]->y() = y + 45;
-    enemies[i]->save(enemies[i]->x(), enemies[i]->y());
-  }
-  for (int i = 8; i < 16; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Purple;
-    enemies[i]->x() = (i % 8 * 45) + 45;
-    enemies[i]->y() = y + 90;
-    enemies[i]->save(enemies[i]->x(), enemies[i]->y());
-  }
-  for (int i = 16; i < 46; ++i)
-  {
-    if (enemies[i] != nullptr) delete enemies[i];
     enemies[i] = new Blue;
     int j = i % 3;
     enemies[i]->x() = (i % 10 * 45);
     enemies[i]->y() = y + 135 + j * 45;
-    enemies[i]->save(enemies[i]->x(), enemies[i]->y());
+    enemies[i]->save(enemies[i]->x(), y + 135 + j * 45);
+  }
+  for (int i = 30; i < 38; ++i)
+  {
+    enemies[i] = new Purple;
+    enemies[i]->x() = (i % 8 * 45) + 45;
+    enemies[i]->y() = y + 90;
+    enemies[i]->save(enemies[i]->x(), y + 90);
+  }
+  for (int i = 44; i < 46; ++i)
+  {
+    enemies[i] = new Flag;
+    enemies[i]->x() = (i % 2 * 135) + 135;
+    enemies[i]->y() = y;
+    enemies[i]->save(enemies[i]->x(), y);
+  }
+  for (int i = 38; i < 41; ++i)
+  {
+    enemies[i] = new Red(enemies[44]);
+    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->y() = y + 45;
+    enemies[i]->save(enemies[i]->x(), y + 45);
+  }
+  for (int i = 41; i < 44; ++i)
+  {
+    enemies[i] = new Red(enemies[45]);
+    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->y() = y + 45;
+    enemies[i]->save(enemies[i]->x(), y + 45);
   }
 }
 
@@ -69,7 +64,7 @@ void Wave::set_surface(Surface * s)
 
 void Wave::update()
 {
-  if (count > wave_amount)
+  if (count >= wave_amount)
     count_checker++;
   else
     count_checker = 0;
