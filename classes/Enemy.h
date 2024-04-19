@@ -9,7 +9,7 @@ class Enemy : public Object
 {
 public:
   Enemy(const char * s, int t) :
-    attacking(false),
+    attacking(false), begin_attack(false),
     Object(new Image(s)),
     amount(t), got_hit(false), recovering(false),
     doing_sin_curve(true),
@@ -21,7 +21,7 @@ public:
     dy() = 0;
   }
   void restore()
-{
+  {
     attacking = false;
     got_hit = false;
     is_hit = false;
@@ -59,26 +59,30 @@ public:
   {
     if (attacking)
     {
-      if (rand() % 100 == 0 && !is_hit)
+      if (begin_attack)
       {
-        shoot();
+        begin_attack = false;
       }
-      if (doing_sin_curve)
-      {
-        dx() = 8 * sin(PI * y() / 100);
-        dy() = 2;
-      }
-      else
-      {
-        if (going_left)
+      else {
+        if (rand() % 100 == 0 && !is_hit)
         {
-          dx() = 5;
+          shoot();
         }
-        else
-      {
-          dx() = -5;
+        if (doing_sin_curve)
+        {
+          dx() = 8 * sin(PI * y() / 100);
+          dy() = 2;
         }
-        dy() = 3;
+        else {
+          if (going_left)
+          {
+            dx() = 5;
+          }
+          else {
+            dx() = -5;
+          }
+          dy() = 3;
+        }
       }
     }
     savex += edx();
@@ -128,6 +132,7 @@ public:
     if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && !recovering && breaktime == 0 && !dont_attack && !is_hit && ENEMIES_CAN_ATTACK)
     {
       attacking = true;
+      begin_attack = true;
       passed0 = true;
     }
     if (!attacking)
@@ -140,6 +145,7 @@ public:
       }
     }
   }
+
   virtual int rand_amnt() 
   {
     return (RANDOM_FOR_ENEMY < 100 ? 100 : RANDOM_FOR_ENEMY);
@@ -160,6 +166,7 @@ public:
   int savex, savey;
   int amount;
   bool attacking;
+  bool begin_attack;
   void switch_hit_status() { is_hit =  true; got_hit = true; }
   bool has_been_hit() { return got_hit; }
   bool got_hit;
