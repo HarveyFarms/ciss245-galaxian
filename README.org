@@ -6,3 +6,11 @@ This is a clone of the original galaxian, but with enough changes to make it min
 - [[file:classes/Game.h][Game class]], which contains the main methods that a game needs.
 - [[file:classes/Background.h][Background class]], used to draw the stars, the texts and extra images in the background
 - [[file:classes/Object.h][Object class]], a class containing an image, coords, and a rect, to draw and manipulate and object on the screen
+- [[file:classes/Ship.h][Ship class]], the ship that the user controls and shoots lasers from to "destroy aliens"
+- [[file:classes/Enemy.h][Parent class for aliens]], containing the proper methods so polymorphism will work on aliens
+  - [[file:classes/Flag.h][Flag class]], the yellow ship at the top
+  - [[file:classes/Red.h][Red class]], the aliens below their leader flag ships
+  - [[file:classes/Purple.h][Purple class]], the 8 aliens below the red ships
+  - [[file:classes/Blue.h][Blue class]], the 3 x 10 array of simple aliens
+- [[file:classes/Laser.h][Laser class]], for both the ship and the aliens
+- [[file:classes/Explosion.h][Explosion class]], two circles drawn to seem like an explosion, when collision occurs.
