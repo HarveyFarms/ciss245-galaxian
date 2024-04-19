@@ -82,8 +82,6 @@ void Game::get_input()
     {
       if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
       else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
-      else if (kp[TAB])
-        amount_ships--;
       else Galaxip->dx() = 0;
       if (kp[SPACE] && !pressed)
       {
@@ -92,9 +90,7 @@ void Game::get_input()
         pressed = true;
       }
       else if (!kp[SPACE] && pressed)
-      {
         pressed = false;
-      }
     }
   }
 }
@@ -387,7 +383,7 @@ void Game::enemy_hits_ship()
 {
   for (int j = 0; j < waves->get_enemies().size(); ++j)
   {
-    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && waves->get_enemies()[j]->counter == 0)
+    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit)
     {
       explode.play();
       RANDOM_FOR_ENEMY -= 40;

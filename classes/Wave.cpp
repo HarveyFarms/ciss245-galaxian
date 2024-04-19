@@ -5,6 +5,10 @@ Wave::Wave()
   wave_amount(1), 
   move(false), show_rect_(false), dx(1), count(0)
 {
+  for (int i = 0; i < 10; ++i)
+  {
+    sections[i] = true;
+  }
   x = 0;
   y = 100;
   w = 440;
@@ -21,7 +25,7 @@ Wave::Wave()
   for (int i = 30; i < 38; ++i)
   {
     enemies[i] = new Purple;
-    enemies[i]->x() = (i % 8 * 45) + 45;
+    enemies[i]->x() = (i % 10 * 45) + 45;
     enemies[i]->y() = y + 90;
     enemies[i]->save(enemies[i]->x(), y + 90);
   }
@@ -64,6 +68,7 @@ void Wave::set_surface(Surface * s)
 
 void Wave::update()
 {
+  resize();
   if (count >= wave_amount)
     count_checker++;
   else
@@ -71,7 +76,6 @@ void Wave::update()
   if (count < 0) 
     count = 0;
   if (count_checker > 400) count = 0;
-  if (enemies.size() == 0) wave_has_died = true;
   x += dx;
   if (x <= 0 || x + w >= W)
   {
@@ -79,15 +83,11 @@ void Wave::update()
     if (x <= 0) dx = 1;
     else if (x + w >= W) dx = -1;
   }
-  if (wave_has_died)
-    reset();
+  wave_has_died = true;
   for (int i = 0; i < enemies.size(); ++i)
   {
-    if (enemies[i]->delete_me)
-    {
-      enemies.erase(enemies.begin() + (i--));
-      continue;
-    }
+    if (!enemies[i]->is_hit && wave_has_died)
+      wave_has_died = false;
     if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
     if (count < wave_amount) // count is for controlling the amnt of enemies on the screen
       enemies[i]->update(move, false);
@@ -96,6 +96,8 @@ void Wave::update()
     if (enemies[i]->enemy_attacking_control0()) ++count;
     if (enemies[i]->enemy_attacking_control1()) --count;
   }
+  if (wave_has_died)
+    reset();
   move = false;
 }
 
@@ -112,11 +114,14 @@ void Wave::decrease(int t)
 {
   enemies[t]->switch_hit_status();
   if (enemies[t]->is_attacking()) count--;
-  enemies[t]->counter = 1;
 }
 
 void Wave::reset()
 {
+  for (int i = 0; i < 10; ++i)
+  {
+    sections[i] = true;
+  }
   ++wave_amount;
   if (wave_amount <= 10)
   {
@@ -133,12 +138,10 @@ void Wave::reset()
   y = 100;
   w = 440;
   h = 260;
-  enemies.resize(46);
   for (int i = 0; i < 30; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Blue;
     int j = i % 3;
+    enemies[i]->restore();
     enemies[i]->breaktime = j * 35 + 100;
     enemies[i]->dx() = 0;
     enemies[i]->x() = (i % 10 * 45);
@@ -147,18 +150,16 @@ void Wave::reset()
   }
   for (int i = 30; i < 38; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Purple;
+    enemies[i]->restore();
     enemies[i]->breaktime = 75;
     enemies[i]->dx() = 0;
-    enemies[i]->x() = (i % 8 * 45) + 45;
+    enemies[i]->x() = (i % 10 * 45) + 45;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 90);
   }
   for (int i = 44; i < 46; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Flag;
+    enemies[i]->restore();
     enemies[i]->breaktime = 20;
     enemies[i]->x() = (i % 2 * 135) + 135;
     enemies[i]->dx() = 0;
@@ -167,8 +168,9 @@ void Wave::reset()
   }
   for (int i = 38; i < 41; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[44]);
+    enemies[i]->restore();
+    enemies[i]->change_master(enemies[44]);
+    enemies[i]->on_own = false;
     enemies[i]->breaktime = 55;
     enemies[i]->dx() = 0;
     enemies[i]->x() = ((i%38) * 45) + 90;
@@ -177,8 +179,9 @@ void Wave::reset()
   }
   for (int i = 41; i < 44; ++i)
   {
-    if (enemies[i] != nullptr) delete enemies[i];
-    enemies[i] = new Red(enemies[45]);
+    enemies[i]->restore();
+    enemies[i]->change_master(enemies[45]);
+    enemies[i]->on_own = false;
     enemies[i]->breaktime = 55;
     enemies[i]->dx() = 0;
     enemies[i]->x() = ((i%38) * 45) + 90;
@@ -186,4 +189,112 @@ void Wave::reset()
     enemies[i]->save(enemies[i]->x(), y + 45);
   }
   wave_has_died = false;
+}
+void Wave::resize()
+{
+  int amount = 0;
+  if (enemies[0]->is_hit && enemies[10]->is_hit && enemies[20]->is_hit)
+  {
+    if (sections[0]) ++amount;
+    sections[0] = false;
+    if (enemies[30]->is_hit && enemies[1]->is_hit && enemies[11]->is_hit && enemies[21]->is_hit)
+    {
+      if (sections[1]) ++amount;
+      sections[1] = false;
+      if (enemies[38]->is_hit && enemies[31]->is_hit && enemies[2]->is_hit && enemies[12]->is_hit && enemies[22]->is_hit)
+      {
+        if (sections[2]) ++amount;
+        sections[2] = false;
+        if (enemies[44]->is_hit && enemies[39]->is_hit && enemies[32]->is_hit && enemies[3]->is_hit && enemies[13]->is_hit && enemies[23]->is_hit)
+        {
+          if (sections[3]) ++amount;
+          sections[3] = false;
+          if (enemies[40]->is_hit && enemies[33]->is_hit && enemies[4]->is_hit && enemies[14]->is_hit && enemies[24]->is_hit)
+          {
+            if (sections[4]) ++amount;
+            sections[4] = false;
+            if (enemies[34]->is_hit && enemies[41]->is_hit && enemies[5]->is_hit && enemies[15]->is_hit && enemies[25]->is_hit)
+            {
+              if (sections[5]) ++amount;
+              sections[5] = false;
+              if (enemies[35]->is_hit && enemies[42]->is_hit && enemies[45]->is_hit && enemies[6]->is_hit && enemies[16]->is_hit && enemies[26]->is_hit)
+              {
+                if (sections[6]) ++amount;
+                sections[6] = false;
+                if (enemies[43]->is_hit && enemies[36]->is_hit && enemies[7]->is_hit && enemies[17]->is_hit && enemies[27]->is_hit)
+                {
+                  if (sections[7]) ++amount;
+                  sections[7] = false;
+                  if (enemies[37]->is_hit && enemies[8]->is_hit && enemies[18]->is_hit && enemies[28]->is_hit)
+                  {
+                    if (sections[8]) ++amount;
+                    sections[8] = false;
+                    if (enemies[9]->is_hit && enemies[19]->is_hit && enemies[29]->is_hit)
+                    {
+                      if (sections[9]) ++amount;
+                      sections[9] = false;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  x += amount * 45;
+  w -= amount * 45;
+  amount = 0;
+  if (enemies[9]->is_hit && enemies[19]->is_hit && enemies[29]->is_hit)
+  {
+    if (sections[9]) ++amount;
+    sections[9] = false;
+    if (enemies[37]->is_hit && enemies[8]->is_hit && enemies[18]->is_hit && enemies[28]->is_hit)
+    {
+      if (sections[8]) ++amount;
+      sections[8] = false;
+      if (enemies[43]->is_hit && enemies[36]->is_hit && enemies[7]->is_hit && enemies[17]->is_hit && enemies[27]->is_hit)
+      {
+        if (sections[7]) ++amount;
+        sections[7] = false;
+        if (enemies[35]->is_hit && enemies[42]->is_hit && enemies[45]->is_hit && enemies[6]->is_hit && enemies[16]->is_hit && enemies[26]->is_hit)
+        {
+          if (sections[6]) ++amount;
+          sections[6] = false;
+          if (enemies[34]->is_hit && enemies[41]->is_hit && enemies[5]->is_hit && enemies[15]->is_hit && enemies[25]->is_hit)
+          {
+            if (sections[5]) ++amount;
+            sections[5] = false;
+            if (enemies[40]->is_hit && enemies[33]->is_hit && enemies[4]->is_hit && enemies[14]->is_hit && enemies[24]->is_hit)
+            {
+              if (sections[4]) ++amount;
+              sections[4] = false;
+              if (enemies[44]->is_hit && enemies[39]->is_hit && enemies[32]->is_hit && enemies[3]->is_hit && enemies[13]->is_hit && enemies[23]->is_hit)
+              {
+                if (sections[3]) ++amount;
+                sections[3] = false;
+                if (enemies[38]->is_hit && enemies[31]->is_hit && enemies[2]->is_hit && enemies[12]->is_hit && enemies[22]->is_hit)
+                {
+                  if (sections[2]) ++amount;
+                  sections[2] = false;
+                  if (enemies[30]->is_hit && enemies[1]->is_hit && enemies[11]->is_hit && enemies[21]->is_hit)
+                  {
+                    if (sections[1]) ++amount;
+                    sections[1] = false;
+                    if (enemies[0]->is_hit && enemies[10]->is_hit && enemies[20]->is_hit)
+                    {
+                      if (sections[0]) ++amount;
+                      sections[0] = false;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  w -= amount * 45;
 }

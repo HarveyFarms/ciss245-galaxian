@@ -17,11 +17,13 @@ public:
   void decrease(int t);
   void reset();
   std::vector< Enemy * > get_enemies() { return enemies; }
+  void resize();
   bool wave_has_died;
   bool coming_in;
   int wave_amount;
 private:
   bool move;
+  bool sections[10];
   int count_checker;
   int count;
   bool show_rect_;

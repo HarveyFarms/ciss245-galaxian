@@ -8,28 +8,25 @@ class Red : public Enemy
 public:
   Red(Enemy * m = NULL) : 
     Enemy("images/GalaxianRedAlien.gif", 50),
-    master(m),
-    on_own(false)
-  {}
+    master(m)
+  {
+    on_own = false;
+  }
+  void change_master(Enemy * m = NULL)
+  {
+    master = m;
+  }
   virtual void extra_update(bool square, bool dont_attack)
   {
-    if (counter > 0)
-    {
-      counter++;
-      if (counter > 200)
-      {
-        counter = 0;
-        delete_me = true;
-      }
-    }
-    if (master->has_been_hit()) on_own = true;
+    if (master->has_been_hit()) 
+      on_own = true;
     passed0 = false;
-    if (!on_own && master->is_attacking() && !master->close_to_bottom() && !attacking)
+    if (!on_own && master->is_attacking() && !master->close_to_bottom() && !attacking && !is_hit && ENEMIES_CAN_ATTACK)
     {
       attacking = true;
       passed0 = true;
     }
-    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack)
+    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack && !is_hit && ENEMIES_CAN_ATTACK)
     {
       attacking = true;
       passed0 = true;
@@ -45,6 +42,10 @@ public:
     }
     if (attacking)
     {
+      if (rand() % 100 == 0 && !is_hit)
+      {
+        shoot();
+      }
       if (on_own)
       {
         if (doing_sin_curve)
@@ -122,6 +123,5 @@ public:
     return (y() + h() >= H);
   }
   Enemy * master;
-  bool on_own;
 };
 #endif

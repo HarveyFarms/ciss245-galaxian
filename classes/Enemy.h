@@ -9,13 +9,27 @@ class Enemy : public Object
 {
 public:
   Enemy(const char * s, int t) :
-    counter(0), delete_me(false),
     attacking(false),
     Object(new Image(s)),
     amount(t), got_hit(false), recovering(false),
     doing_sin_curve(true),
     going_left(false), breaktime(0), passed0(false), passed1(false)
   {
+    lasers.resize(0);
+    dx() = 1;
+    edx() = 1;
+    dy() = 0;
+  }
+  void restore()
+{
+    attacking = false;
+    got_hit = false;
+    is_hit = false;
+    recovering = false;
+    doing_sin_curve = true;
+    going_left = false;
+    passed0 = false;
+    passed1 = false;
     lasers.resize(0);
     dx() = 1;
     edx() = 1;
@@ -38,26 +52,16 @@ public:
   }
   void shoot()
   {
-    if (lasers.size() < 3) lasers.push_back(Laser(x() + (w() / 2), y(), false));
+    if (lasers.size() < 3) 
+      lasers.push_back(Laser(x() + (w() / 2), y(), false));
   }
-  int counter;
-  bool delete_me;
   virtual void extra_update(bool square, bool dont_attack)
   {
-    if (counter > 0)
-  {
-      counter++;
-      if (counter > 200)
-      {
-        counter = 0;
-        delete_me = true;
-      }
-    }
     if (attacking)
     {
-      if (rand() % 100 == 0 && lasers.size() < 3 && counter == 0)
+      if (rand() % 100 == 0 && !is_hit)
       {
-        lasers.push_back(Laser(x() + (w() / 2), y(), false));
+        shoot();
       }
       if (doing_sin_curve)
       {
@@ -121,7 +125,7 @@ public:
       edx() *= -1;
     }
     passed0 = false;
-    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && !recovering && breaktime == 0 && !dont_attack)
+    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && !recovering && breaktime == 0 && !dont_attack && !is_hit && ENEMIES_CAN_ATTACK)
     {
       attacking = true;
       passed0 = true;
@@ -140,6 +144,9 @@ public:
   {
     return (RANDOM_FOR_ENEMY < 100 ? 100 : RANDOM_FOR_ENEMY);
   }
+  virtual void change_master(Enemy * m = NULL)
+  {}
+  bool on_own;
   void save(int x, int y)
   {
     savex = x;
@@ -163,8 +170,8 @@ public:
   bool passed0;
   bool passed1;
   std::vector< Laser > get_lasers() { return lasers; }
-private:
   std::vector< Laser > lasers;
+private:
 };
 
 #endif

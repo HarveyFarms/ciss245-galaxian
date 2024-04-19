@@ -12,7 +12,7 @@ public:
   : image(NULL), is_hit(false)
   {}
   Object(Image * s)
-  : image(s), assembled(true)
+  : image(s), assembled(true), is_hit(false)
   {}
   ~Object()
   {
