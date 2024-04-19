@@ -2,5 +2,7 @@
 
 This is a clone of the original galaxian, but with enough changes to make it mine.
 
-* list of classes
-- [[file:classes/Background.h][the background header file]], used to draw the stars, the texts and extra images in the background
+* [[file:classes/][list]] of classes
+- [[file:classes/Game.h][Game class]], which contains the main methods that a game needs.
+- [[file:classes/Background.h][Background class]], used to draw the stars, the texts and extra images in the background
+- [[file:classes/Object.h][Object class]], a class containing an image, coords, and a rect, to draw and manipulate and object on the screen
