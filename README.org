@@ -3,4 +3,4 @@
 This is a clone of the original galaxian, but with enough changes to make it mine.
 
 * list of classes
-- [[file:classes/Background.h][Background header file, used to draw the stars, the texts and extra images in the background]]
+- [[file:classes/Background.h][the background header file]], used to draw the stars, the texts and extra images in the background
