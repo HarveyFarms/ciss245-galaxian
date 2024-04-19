@@ -17,12 +17,12 @@ const float PI = 3.14159;
 const Color USER_LASER_COLOR = {255, 255, 0, 0};
 const Color ENEMY_LASER_COLOR = {255, 0, 0, 0};
 const int LASER_SPEED = 8;
-const int AMOUNT_OF_SHOOTABLE_LASERS = 30;
+const int AMOUNT_OF_SHOOTABLE_LASERS = 3;
 const int LASER_WIDTH_FOR_USER = 2;
-const int LASER_LENGTH_FOR_USER = 150;
+const int LASER_LENGTH_FOR_USER = 15;
 
 // for debugging
-const bool ENEMIES_CAN_ATTACK = false;
+const bool ENEMIES_CAN_ATTACK = true;
 
 // mutable global variables
 extern int RANDOM_FOR_ENEMY;

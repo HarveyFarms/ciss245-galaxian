@@ -1,8 +1,9 @@
 #include "Wave.h"
 
 Wave::Wave()
-  : wave_has_died(false), coming_in(false),
-  wave_amount(1), 
+  : wave_has_died(false), wave_dead(false),
+  dead_counter(0),
+  coming_in(false), wave_amount(1), 
   move(false), show_rect_(false), dx(1), count(0)
 {
   for (int i = 0; i < 10; ++i)
@@ -68,6 +69,10 @@ void Wave::set_surface(Surface * s)
 
 void Wave::update()
 {
+  if (dead_counter > 150)
+    wave_has_died = true;
+  if (wave_has_died)
+    reset();
   resize();
   if (count >= wave_amount)
     count_checker++;
@@ -83,11 +88,11 @@ void Wave::update()
     if (x <= 0) dx = 1;
     else if (x + w >= W) dx = -1;
   }
-  wave_has_died = true;
+  wave_dead = true;
   for (int i = 0; i < enemies.size(); ++i)
   {
-    if (!enemies[i]->is_hit && wave_has_died)
-      wave_has_died = false;
+    if (!enemies[i]->is_hit && wave_dead)
+      wave_dead = false;
     if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
     if (count < wave_amount) // count is for controlling the amnt of enemies on the screen
       enemies[i]->update(move, false);
@@ -96,8 +101,8 @@ void Wave::update()
     if (enemies[i]->enemy_attacking_control0()) ++count;
     if (enemies[i]->enemy_attacking_control1()) --count;
   }
-  if (wave_has_died)
-    reset();
+  if (wave_dead)
+    ++dead_counter;
   move = false;
 }
 
@@ -118,6 +123,7 @@ void Wave::decrease(int t)
 
 void Wave::reset()
 {
+  dead_counter = 0;
   for (int i = 0; i < 10; ++i)
   {
     sections[i] = true;

@@ -19,6 +19,8 @@ public:
   std::vector< Enemy * > get_enemies() { return enemies; }
   void resize();
   bool wave_has_died;
+  bool wave_dead;
+  int dead_counter;
   bool coming_in;
   int wave_amount;
 private:
