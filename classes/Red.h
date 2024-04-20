@@ -5,83 +5,83 @@
 
 class Red : public Enemy
 {
-public:
-  Red(Enemy * m = NULL) : 
-    Enemy("images/GalaxianRedAlien.gif", 50),
-    master(m)
+  public:
+    Red(Enemy * m = NULL) : 
+      Enemy("images/GalaxianRedAlien.gif", 50),
+      master(m)
   {
     on_own = false;
   }
-  void change_master(Enemy * m = NULL)
-  {
-    master = m;
-  }
-  virtual void extra_update(bool square, bool dont_attack)
-  {
-    if (master->has_been_hit()) 
-      on_own = true;
-    passed0 = false;
-    if (!on_own && master->is_attacking() && !master->close_to_bottom() && !attacking && !is_hit && ENEMIES_CAN_ATTACK)
+    void change_master(Enemy * m = NULL)
     {
-      attacking = true;
-      passed0 = true;
+      master = m;
     }
-    if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack && !is_hit && ENEMIES_CAN_ATTACK)
+    virtual void extra_update(bool square, bool dont_attack)
     {
-      attacking = true;
-      begin_attack = true;
-      passed0 = true;
-    }
-    if (!attacking)
-    {
-      if (rand() % 2 == 0) 
+      if (master->has_been_hit()) 
+        on_own = true;
+      passed0 = false;
+      if (!on_own && master->is_attacking() && !master->close_to_bottom() && !attacking && !is_hit && ENEMIES_CAN_ATTACK)
       {
-        if (rand() % 5 == 0)
-          doing_sin_curve = !doing_sin_curve;
-        going_left = !going_left;
+        attacking = true;
+        passed0 = true;
       }
-    }
-    if (attacking)
-    {
-      if (begin_attack)
+      if (rand() % rand_amnt() == rand() % rand_amnt() && !attacking && on_own && !recovering && breaktime == 0 && !dont_attack && !is_hit && ENEMIES_CAN_ATTACK)
       {
-        begin_attack = false;
+        attacking = true;
+        begin_attack = true;
+        passed0 = true;
       }
-      else
-    {
-        if (rand() % 100 == 0 && !is_hit)
+      if (!attacking)
+      {
+        if (rand() % 2 == 0) 
         {
-          shoot();
+          if (rand() % 5 == 0)
+            doing_sin_curve = !doing_sin_curve;
+          going_left = !going_left;
         }
-        if (on_own)
+      }
+      if (attacking)
+      {
+        if (begin_attack)
         {
-          if (doing_sin_curve)
-          {
-            dx() = 8 * sin(PI * y() / 100);
-            dy() = 2;
-          }
-          else
-        {
-            if (going_left)
-            {
-              dx() = 5;
-            }
-            else
-          {
-              dx() = -5;
-            }
-            dy() = 3;
-          }
+          begin_attack = false;
         }
         else
-      {
-          doing_sin_curve = master->doing_sin_curve;
-          going_left = master->going_left;
-          dx() = master->dx();
-          dy() = master->dy();
+        {
+          if (rand() % 100 == 0 && !is_hit)
+          {
+            shoot();
+          }
+          if (on_own)
+          {
+            if (doing_sin_curve)
+            {
+              dx() = 8 * sin(PI * y() / 100);
+              dy() = 2;
+            }
+            else
+            {
+              if (going_left)
+              {
+                dx() = 5;
+              }
+              else
+              {
+                dx() = -5;
+              }
+              dy() = 3;
+            }
+          }
+          else
+          {
+            doing_sin_curve = master->doing_sin_curve;
+            going_left = master->going_left;
+            dx() = master->dx();
+            dy() = master->dy();
+          }
         }
       }
-    }
       savex += edx();
       if (breaktime != 0)
       {
@@ -125,11 +125,11 @@ public:
         if (!attacking) dx() *= -1;
         edx() *= -1;
       }
-  }
-  virtual bool outside_bottom()
-  {
-    return (y() + h() >= H);
-  }
-  Enemy * master;
+    }
+    virtual bool outside_bottom()
+    {
+      return (y() + h() >= H);
+    }
+    Enemy * master;
 };
 #endif
