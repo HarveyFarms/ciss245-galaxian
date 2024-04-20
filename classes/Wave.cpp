@@ -18,6 +18,7 @@ Wave::Wave()
   for (int i = 0; i < 30; ++i)
   {
     enemies[i] = new Blue;
+    if (!SPAWN_BLUES) enemies[i]->is_hit = true;
     int j = i % 3;
     enemies[i]->x() = (i % 10 * 45);
     enemies[i]->y() = y + 135 + j * 45;
@@ -26,28 +27,32 @@ Wave::Wave()
   for (int i = 30; i < 38; ++i)
   {
     enemies[i] = new Purple;
+    if (!SPAWN_PURPLES) enemies[i]->is_hit = true;
     enemies[i]->x() = (i % 10 * 45) + 45;
     enemies[i]->y() = y + 90;
     enemies[i]->save(enemies[i]->x(), y + 90);
   }
-  for (int i = 44; i < 46; ++i)
+  for (int i = 38; i < 40; ++i)
   {
     enemies[i] = new Flag;
+    if (!SPAWN_FLAGS) enemies[i]->is_hit = true;
     enemies[i]->x() = (i % 2 * 135) + 135;
     enemies[i]->y() = y;
     enemies[i]->save(enemies[i]->x(), y);
   }
-  for (int i = 38; i < 41; ++i)
+  for (int i = 40; i < 43; ++i)
   {
-    enemies[i] = new Red(enemies[44]);
-    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i] = new Red(enemies[38]);
+    if (!SPAWN_REDS) enemies[i]->is_hit = true;
+    enemies[i]->x() = ((i%40) * 45) + 90;
     enemies[i]->y() = y + 45;
     enemies[i]->save(enemies[i]->x(), y + 45);
   }
-  for (int i = 41; i < 44; ++i)
+  for (int i = 43; i < 46; ++i)
   {
-    enemies[i] = new Red(enemies[45]);
-    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i] = new Red(enemies[39]);
+    if (!SPAWN_REDS) enemies[i]->is_hit = true;
+    enemies[i]->x() = ((i%40) * 45) + 90;
     enemies[i]->y() = y + 45;
     enemies[i]->save(enemies[i]->x(), y + 45);
   }
@@ -93,7 +98,8 @@ void Wave::update()
   {
     if (!enemies[i]->is_hit && wave_dead)
       wave_dead = false;
-    if (enemies[i]->y() == enemies[i]->savey) coming_in = false;
+    if (enemies[i]->y() == enemies[i]->savey) 
+      coming_in = false;
     if (count < wave_amount) // count is for controlling the amnt of enemies on the screen
       enemies[i]->update(move, false);
     else
@@ -148,6 +154,7 @@ void Wave::reset()
   {
     int j = i % 3;
     enemies[i]->restore();
+    if (!SPAWN_BLUES) enemies[i]->is_hit = true;
     enemies[i]->breaktime = j * 35 + 100;
     enemies[i]->dx() = 0;
     enemies[i]->x() = (i % 10 * 45);
@@ -157,40 +164,44 @@ void Wave::reset()
   for (int i = 30; i < 38; ++i)
   {
     enemies[i]->restore();
+    if (!SPAWN_PURPLES) enemies[i]->is_hit = true;
     enemies[i]->breaktime = 75;
     enemies[i]->dx() = 0;
     enemies[i]->x() = (i % 10 * 45) + 45;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 90);
   }
-  for (int i = 44; i < 46; ++i)
+  for (int i = 38; i < 40; ++i)
   {
     enemies[i]->restore();
+    if (!SPAWN_FLAGS) enemies[i]->is_hit = true;
     enemies[i]->breaktime = 20;
     enemies[i]->x() = (i % 2 * 135) + 135;
     enemies[i]->dx() = 0;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y);
   }
-  for (int i = 38; i < 41; ++i)
+  for (int i = 40; i < 43; ++i)
   {
     enemies[i]->restore();
-    enemies[i]->change_master(enemies[44]);
+    if (!SPAWN_REDS) enemies[i]->is_hit = true;
+    enemies[i]->change_master(enemies[38]);
     enemies[i]->on_own = false;
     enemies[i]->breaktime = 55;
     enemies[i]->dx() = 0;
-    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->x() = ((i%40) * 45) + 90;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 45);
   }
-  for (int i = 41; i < 44; ++i)
+  for (int i = 43; i < 46; ++i)
   {
     enemies[i]->restore();
-    enemies[i]->change_master(enemies[45]);
+    if (!SPAWN_REDS) enemies[i]->is_hit = true;
+    enemies[i]->change_master(enemies[39]);
     enemies[i]->on_own = false;
     enemies[i]->breaktime = 55;
     enemies[i]->dx() = 0;
-    enemies[i]->x() = ((i%38) * 45) + 90;
+    enemies[i]->x() = ((i%40) * 45) + 90;
     enemies[i]->y() = -32;
     enemies[i]->save(enemies[i]->x(), y + 45);
   }
