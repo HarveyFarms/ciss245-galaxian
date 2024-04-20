@@ -106,13 +106,21 @@ void Game::update()
   if (playing())
   {
     waves->update();
+    if (!reboot_ship && timer != 0)
+    {
+      ++timer;
+      if (timer > 120)
+      {
+        timer = 0;
+      }
+    }
     if (reboot_ship && !background->game_ended())
     {
       ++timer;
       if (timer > 300)
       {
         reboot_ship = false;
-        timer = 0;
+        timer = 1;
         setup_ships();
       }
     }
@@ -172,43 +180,43 @@ int Game::infile()
     char z[4];
     f >> z;
     f >> first;
-    if (first < background->get_hiscore()) return 1;
+    if (first < background->get_score()) return 1;
     f >> z;
     if (f.eof()) return 2;
     f >> second;
-    if (second < background->get_hiscore()) return 2;
+    if (second < background->get_score()) return 2;
     f >> z;
     if (f.eof()) return 3;
     f >> third;
-    if (third < background->get_hiscore()) return 3;
+    if (third < background->get_score()) return 3;
     f >> z;
     if (f.eof()) return 4;
     f >> fourth;
-    if (fourth < background->get_hiscore()) return 4;
+    if (fourth < background->get_score()) return 4;
     f >> z;
     if (f.eof()) return 5;
     f >> fifth;
-    if (fifth < background->get_hiscore()) return 5;
+    if (fifth < background->get_score()) return 5;
     f >> z;
     if (f.eof()) return 6;
     f >> sixth;
-    if (sixth < background->get_hiscore()) return 6;
+    if (sixth < background->get_score()) return 6;
     f >> z;
     if (f.eof()) return 7;
     f >> seventh;
-    if (seventh < background->get_hiscore()) return 7;
+    if (seventh < background->get_score()) return 7;
     f >> z;
     if (f.eof()) return 8;
     f >> eighth;
-    if (eighth < background->get_hiscore()) return 8;
+    if (eighth < background->get_score()) return 8;
     f >> z;
     if (f.eof()) return 9;
     f >> ninth;
-    if (ninth < background->get_hiscore()) return 9;
+    if (ninth < background->get_score()) return 9;
     f >> z;
     if (f.eof()) return 10;
     f >> tenth;
-    if (tenth < background->get_hiscore()) return 10;
+    if (tenth < background->get_score()) return 10;
     else return 0;
 
     f.close();
@@ -264,13 +272,13 @@ void Game::handle_background()
   }
   if (count > 300)
   {
-    if (background->get_hiscore() > 0)
+    if (background->get_score() > 0)
     {
       place = infile();
       background->inputplace(place);
       in.clear();
       background->switch_typing();
-      save_score = background->get_hiscore();
+      save_score = background->get_score();
     }
     background->game_over_switch();
     reset_all();
@@ -381,9 +389,10 @@ void Game::laser_hits_enemy()
 }
 void Game::enemy_hits_ship()
 {
+  bool invincibility_mode = !reboot_ship && timer != 0;
   for (int j = 0; j < waves->get_enemies().size(); ++j)
   {
-    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit && amount_ships > 0)
+    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit && amount_ships > 0 && !invincibility_mode)
     {
       explode.play();
       RANDOM_FOR_ENEMY -= 40;
@@ -399,11 +408,12 @@ void Game::enemy_hits_ship()
 }
 void Game::laser_hits_ship()
 {
+  bool invincibility_mode = !reboot_ship && timer != 0;
   for (int i = 0; i < waves->get_enemies().size(); ++i)
   {
     for (int j = 0; j < waves->get_enemies()[i]->get_lasers().size(); ++j)
     {
-      if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]) && amount_ships > 0)
+      if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]) && amount_ships > 0 && !invincibility_mode)
       {
         explode.play();
         explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));

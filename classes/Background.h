@@ -46,7 +46,7 @@ public:
   {
     return (!starting_screen && !typing && !leaderboards_screen && !instructions_screen);
   }
-  int get_hiscore() { return high_score; }
+  int get_score() { return score_score; }
   bool game_ended() { return game_over; }
   bool is_typing() { return typing; }
   void game_over_switch() { game_over = !game_over; }
@@ -118,6 +118,7 @@ private:
   void draw_cursor_section();
   void update_ships();
   void draw_ships();
+  void set_hi();
 
   // stars
   std::vector< Star > stars;

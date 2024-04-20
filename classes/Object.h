@@ -9,11 +9,14 @@ class Object
 {
 public:
   Object()
-  : image(NULL), is_hit(false)
+  : image(NULL), is_hit(false),
+    doing_sin_curve(false), theta(0)
   {}
   Object(Image * s)
-  : image(s), assembled(true), is_hit(false)
+  : image(s), assembled(true), is_hit(false),
+    doing_sin_curve(false), theta(0)
   {}
+  bool doing_sin_curve;
   ~Object()
   {
     if (image != NULL) delete image;
@@ -68,6 +71,7 @@ public:
     y() += dy_;
     extra_update(move, dont_attack);
   }
+  double theta;
   virtual void extra_update(bool move, bool dont_attack)
   {}
   virtual bool outside_bottom()

@@ -12,8 +12,7 @@ public:
     attacking(false), begin_attack(false),
     Object(new Image(s)),
     amount(t), got_hit(false), recovering(false),
-    doing_sin_curve(true),
-    going_left(false), breaktime(0), passed0(false), passed1(false)
+    going_left(false), breaktime(0), passed0(false), passed1(false), very_beginning(false)
   {
     lasers.resize(0);
     dx() = 1;
@@ -55,13 +54,23 @@ public:
     if (lasers.size() < 3) 
       lasers.push_back(Laser(x() + (w() / 2), y(), false));
   }
+  bool very_beginning;
   virtual void extra_update(bool square, bool dont_attack)
   {
     if (attacking)
     {
       if (begin_attack)
       {
-        begin_attack = false;
+        if (very_beginning) 
+        {
+          theta = 0.5;
+          very_beginning = false;
+        }
+        theta += 0.025;
+        if (theta >= 1.5)
+          begin_attack = false;
+        dx() = (edx() < 0 ? -1 : 1) * 3 * cos(theta * PI);
+        dy() = 3 * -sin(theta * PI);
       }
       else {
         if (rand() % 100 == 0 && !is_hit)
@@ -70,7 +79,7 @@ public:
         }
         if (doing_sin_curve)
         {
-          dx() = 8 * sin(PI * y() / 100);
+          dx() = 8 * cos(y() * PI / 100);
           dy() = 2;
         }
         else {
@@ -133,6 +142,7 @@ public:
     {
       attacking = true;
       begin_attack = true;
+      very_beginning = true;
       passed0 = true;
     }
     if (!attacking)
@@ -171,7 +181,6 @@ public:
   bool has_been_hit() { return got_hit; }
   bool got_hit;
   bool recovering;
-  bool doing_sin_curve;
   bool going_left;
   int breaktime;
   bool passed0;

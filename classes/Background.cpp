@@ -92,6 +92,7 @@ Background::Background() :
   setup_text();
   setup_rects();
   cursor_y = H / 2 + 90;
+  set_hi();
 }
 Background::~Background()
 {
@@ -439,7 +440,7 @@ void Background::reset()
 {
   switch_screen();
   score_score = 0;
-  high_score = 0;
+  set_hi();
 }
 void Background::draw_score_section()
 {
@@ -976,4 +977,11 @@ void Background::reset_intructions()
   blue = new Image("images/GalaxianAquaAlien.gif");
   blue->rect().x = W / 2 + 350;
   blue->rect().y = H / 2 + 250;
+}
+void Background::set_hi()
+{
+  std::ifstream f("scores.txt", std::ios::in);
+  char t[100];
+  f >> t;
+  f >> high_score;
 }

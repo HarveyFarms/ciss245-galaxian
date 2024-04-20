@@ -30,6 +30,7 @@ public:
     {
       attacking = true;
       begin_attack = true;
+      very_beginning = true;
       passed0 = true;
     }
     if (!attacking)
@@ -45,7 +46,16 @@ public:
     {
       if (begin_attack)
       {
-        begin_attack = false;
+        if (very_beginning) 
+        {
+          theta = 0.5;
+          very_beginning = false;
+        }
+        theta += 0.025;
+        if (theta >= 1.5)
+          begin_attack = false;
+        dx() = 3 * cos(theta * PI);
+        dy() = (edx() < 0 ? -1 : 1) * 3 * -sin(theta * PI);
       }
       else
     {
