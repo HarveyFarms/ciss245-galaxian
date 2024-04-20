@@ -383,7 +383,7 @@ void Game::enemy_hits_ship()
 {
   for (int j = 0; j < waves->get_enemies().size(); ++j)
   {
-    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit)
+    if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit && amount_ships > 0)
     {
       explode.play();
       RANDOM_FOR_ENEMY -= 40;
@@ -393,7 +393,7 @@ void Game::enemy_hits_ship()
       explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
       --amount_ships;
       reboot_ship = true;
-      continue;
+      return;
     }
   }
 }
@@ -403,7 +403,7 @@ void Game::laser_hits_ship()
   {
     for (int j = 0; j < waves->get_enemies()[i]->get_lasers().size(); ++j)
     {
-      if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]))
+      if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]) && amount_ships > 0)
       {
         explode.play();
         explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
