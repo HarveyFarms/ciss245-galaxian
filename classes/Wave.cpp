@@ -4,7 +4,7 @@ Wave::Wave()
   : wave_has_died(false), wave_dead(false),
   dead_counter(0),
   coming_in(false), wave_amount(STARTING_WAVE), 
-  move(false), show_rect_(true), dx(1), count(0)
+  move(false), show_rect_(false), dx(1), count(0)
 {
   for (int i = 0; i < 10; ++i)
   {
