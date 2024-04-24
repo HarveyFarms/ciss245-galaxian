@@ -13,8 +13,6 @@ const int GAME_IS_RUNNING = 1;
 // math
 const float PI = 3.14159;
 
-// 
-const int STARTING_WAVE = 1;
 
 // for user's lasers
 const Color USER_LASER_COLOR = {255, 255, 0, 0};
@@ -31,6 +29,9 @@ const bool SPAWN_BLUES = true;
 const bool SPAWN_PURPLES = true;
 const bool SPAWN_REDS = true;
 const bool SPAWN_FLAGS = true;
+const int STARTING_WAVE = 1;
+const bool INVINCIBILITY_FOR_SHIP = false;
+const bool INVINCIBILITY_FOR_ENEMIES = false;
 
 // mutable global variables
 extern int RANDOM_FOR_ENEMY;

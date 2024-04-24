@@ -130,7 +130,7 @@ public:
     }
     if (outside_right())
     {
-      x() = 0;
+      x() = 0 - w();
     }
     if (square)
     {

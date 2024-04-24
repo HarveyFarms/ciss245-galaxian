@@ -75,6 +75,10 @@ void Game::run()
 
 void Game::get_input()
 {
+  if (kp[TAB])
+    paused = true;
+  else
+    paused = false;
   background_input();
   if (playing())
   {
@@ -128,9 +132,11 @@ void Game::update()
   {
       Galaxip->update();
       enemy_hits_ship();
-      laser_hits_ship();
+      if (!INVINCIBILITY_FOR_SHIP) 
+        laser_hits_ship();
     }
-    laser_hits_enemy();
+    if (!INVINCIBILITY_FOR_ENEMIES) 
+      laser_hits_enemy();
   }
 }
 void Game::draw()
@@ -394,15 +400,21 @@ void Game::enemy_hits_ship()
   {
     if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit && amount_ships > 0 && !invincibility_mode)
     {
-      explode.play();
-      RANDOM_FOR_ENEMY -= 40;
-      RANDOM_FOR_FLAG -= 50;
-      explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
-      waves->decrease(j--);
-      explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
-      --amount_ships;
-      reboot_ship = true;
-      return;
+      if (!INVINCIBILITY_FOR_SHIP || !INVINCIBILITY_FOR_ENEMIES)
+        explode.play();
+      if (!INVINCIBILITY_FOR_ENEMIES)
+      {
+        RANDOM_FOR_ENEMY -= 40;
+        RANDOM_FOR_FLAG -= 50;
+        explosions.push_back(Explosion(waves->get_enemies()[j]->x(), waves->get_enemies()[j]->y()));
+        waves->decrease(j--);
+      }
+      if (!INVINCIBILITY_FOR_SHIP)
+      {
+        explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
+        --amount_ships;
+        reboot_ship = true;
+      }
     }
   }
 }
@@ -420,7 +432,6 @@ void Game::laser_hits_ship()
         waves->get_enemies()[i]->cleanup(j--);
         --amount_ships;
         reboot_ship = true;
-        continue;
       }
     }
   }
