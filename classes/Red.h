@@ -67,7 +67,7 @@ public:
         {
           if (doing_sin_curve)
           {
-            dx() = 8 * sin(PI * y() / 100);
+            dx() = 8 * cos(y() * PI / 100);
             dy() = 2;
           }
           else
