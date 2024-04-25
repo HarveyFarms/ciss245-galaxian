@@ -16,7 +16,7 @@ const float PI = 3.14159;
 // options
 
 // mouse options WARNING: ENABLING MOUSE CAN MESS WITH GAMEPLAY IF USING KEYBOARD
-const bool ALLOW_ALL_MOUSE = true;
+const bool ALLOW_ALL_MOUSE = false;
 const bool ALLOW_MOUSE_MOVEMENT = false || ALLOW_ALL_MOUSE;
 const bool ALLOW_MOUSE_SELECTION = false || ALLOW_ALL_MOUSE;
 const bool ALLOW_MOUSE_SHOOTING = false || ALLOW_ALL_MOUSE;
