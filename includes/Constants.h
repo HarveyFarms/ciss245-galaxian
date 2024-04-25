@@ -18,6 +18,7 @@ const bool ALLOW_ALL_MOUSE = true;
 const bool ALLOW_MOUSE_MOVEMENT = false || ALLOW_ALL_MOUSE;
 const bool ALLOW_MOUSE_SELECTION = false || ALLOW_ALL_MOUSE;
 const bool ALLOW_MOUSE_SHOOTING = false || ALLOW_ALL_MOUSE;
+const bool START_MUTED = false;
 
 // for user's lasers
 const Color USER_LASER_COLOR = {255, 255, 0, 0};

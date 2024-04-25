@@ -30,7 +30,9 @@ Game::Game() :
   wait(0),
   pressed(false),
   clicked(false),
-  counter_for_shot(0)
+  counter_for_shot(0),
+  m_key_pressed(false),
+  muted(START_MUTED)
 {
   srand((unsigned int) time(nullptr));
   Star::set_surface(surface);
@@ -53,7 +55,8 @@ Game::~Game()
 void Game::run()
 {
   int start, end, dt, RATE = s60FPS;
-  game_music.play();
+  if (!muted)
+    game_music.play();
   while (GAME_IS_RUNNING && !user_quits())
   {
     start = getTicks();
@@ -78,6 +81,19 @@ void Game::run()
 
 void Game::get_input()
 {
+  if (!m_key_pressed && kp[SDLK_m]) {
+    muted = !muted;
+    m_key_pressed = true;
+
+    if (muted) {
+      game_music.play();
+    }
+    else {
+      game_music.stop();
+    }
+  }
+  else if (m_key_pressed && !kp[SDLK_m])
+    m_key_pressed = false;
   if (kp[TAB])
     paused = true;
   else
@@ -92,7 +108,7 @@ void Game::get_input()
       else Galaxip->dx() = 0;
       if (kp[SPACE] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING && counter_for_shot == 0))
       {
-        if (Galaxip->shoot())
+        if (Galaxip->shoot() && !muted)
           shoot.play();
         if (kp[SPACE])
           pressed = true;
@@ -110,7 +126,7 @@ void Game::update()
 {
   if (counter_for_shot != 0) {
     ++counter_for_shot;
-    if (counter_for_shot > 60)
+    if (counter_for_shot > 20)
       counter_for_shot = 0;
   }
   if (amount_ships == 0 && !background->game_ended())
@@ -411,7 +427,8 @@ void Game::laser_hits_enemy()
     {
       if (waves->get_enemies()[j]->hit_by_laser(Galaxip->get_lasers()[i]) && !waves->get_enemies()[j]->is_hit)
       {
-        explode.play();
+        if (!muted)
+          explode.play();
         RANDOM_FOR_ENEMY -= 75;
         RANDOM_FOR_FLAG -= 100;
         if (waves->get_enemies()[j]->is_attacking()) 
@@ -436,8 +453,10 @@ void Game::enemy_hits_ship()
   {
     if (Galaxip->collided_w_object(waves->get_enemies()[j]) && !waves->get_enemies()[j]->is_hit && amount_ships > 0 && !invincibility_mode)
     {
-      if (!INVINCIBILITY_FOR_SHIP || !INVINCIBILITY_FOR_ENEMIES)
-        explode.play();
+      if (!INVINCIBILITY_FOR_SHIP || !INVINCIBILITY_FOR_ENEMIES) {
+        if (!muted)
+          explode.play();
+      }
       if (!INVINCIBILITY_FOR_ENEMIES)
       {
         RANDOM_FOR_ENEMY -= 40;
@@ -463,7 +482,8 @@ void Game::laser_hits_ship()
     {
       if (Galaxip->hit_by_laser(waves->get_enemies()[i]->get_lasers()[j]) && amount_ships > 0 && !invincibility_mode)
       {
-        explode.play();
+        if (!muted)
+          explode.play();
         explosions.push_back(Explosion(Galaxip->x(), Galaxip->y()));
         waves->get_enemies()[i]->cleanup(j--);
         --amount_ships;

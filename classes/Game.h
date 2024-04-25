@@ -112,5 +112,7 @@ private:
   bool pressed;
   bool clicked;
   int counter_for_shot;
+  bool m_key_pressed;
+  bool muted;
 };
 #endif
