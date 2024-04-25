@@ -13,6 +13,10 @@ const int GAME_IS_RUNNING = 1;
 // math
 const float PI = 3.14159;
 
+// options
+const bool ALLOW_MOUSE_MOVEMENT = true;
+const bool ALLOW_MOUSE_SELECTION = true;
+const bool ALLOW_MOUSE_SHOOTING = true;
 
 // for user's lasers
 const Color USER_LASER_COLOR = {255, 255, 0, 0};

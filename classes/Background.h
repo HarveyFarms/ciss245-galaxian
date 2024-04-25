@@ -103,6 +103,7 @@ public:
   std::string & waves_str() { return waves_string; }
   bool inc_wave;
   int amnt_lives;
+  int cursor_y;
 private:
   // methods to setup text
   void setup_text();
@@ -153,7 +154,6 @@ private:
   // for cursor and options
   Image* cursor;
   Image* Iinstructions;
-  int cursor_y;
   Image* play;
   Image* instructions;
   Image* leaderboards;

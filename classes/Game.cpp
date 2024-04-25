@@ -4,6 +4,7 @@
 Surface * Object::s_(NULL);
 
 Game::Game() :
+  user_clicked(false),
   background(new Background()),
   Galaxip(new Ship()),
   waves(new Wave()),
@@ -27,7 +28,8 @@ Game::Game() :
   count(0),
   waiting(false),
   wait(0),
-  pressed(false)
+  pressed(false),
+  clicked(false)
 {
   srand((unsigned int) time(nullptr));
   Star::set_surface(surface);
@@ -84,17 +86,22 @@ void Game::get_input()
   {
     if (!reboot_ship)
     {
-      if (kp[LEFTARROW] && !Galaxip->outside_left()) Galaxip->dx() = -4;
-      else if (kp[RIGHTARROW] && !Galaxip->outside_right()) Galaxip->dx() = 4;
+      if (kp[LEFTARROW] && !Galaxip->outside_left() || mouse_x() + 10 < Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = -4;
+      else if (kp[RIGHTARROW] && !Galaxip->outside_right() || mouse_x() - 42 > Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = 4;
       else Galaxip->dx() = 0;
-      if (kp[SPACE] && !pressed)
+      if (kp[SPACE] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING))
       {
         if (Galaxip->shoot())
           shoot.play();
-        pressed = true;
+        if (kp[SPACE])
+          pressed = true;
+        if (mouse_left())
+          clicked = true;
       }
       else if (!kp[SPACE] && pressed)
         pressed = false;
+      else if (!mouse_left() && clicked)
+        clicked = false;
     }
   }
 }
@@ -335,9 +342,30 @@ void Game::background_input()
 {
     if (background->on_starting_screen())
     {
-      if (kp[RET] && goto_play()) background->switch_screen();
-      if (kp[RET] && goto_instructions()) background->switch_instructions();
-      if (kp[RET] && goto_leaderboards()) background->switch_leaderboards();
+      if (mouse_on_play())
+      {
+        background->cursor_y = H / 2 + 90;
+      }
+      else if (mouse_on_instructions())
+      {
+        background->cursor_y = H / 2 + 160;
+      }
+      else if (mouse_on_leader())
+      {
+        background->cursor_y = H / 2 + 230;
+      }
+      else if (mouse_on_exit())
+      {
+        background->cursor_y = H / 2 + 300;
+      }
+      if (kp[RET] && goto_play() || mouse_on_play() && mouse_left()) 
+        background->switch_screen();
+      if (kp[RET] && goto_instructions() || mouse_on_instructions() && mouse_left()) 
+        background->switch_instructions();
+      if (kp[RET] && goto_leaderboards() || mouse_on_leader() && mouse_left()) 
+        background->switch_leaderboards();
+      if (mouse_on_exit() && mouse_left())
+        user_clicked = true;
       if (kp[UPARROW] && !waiting) 
       {
         background->cursor_up();

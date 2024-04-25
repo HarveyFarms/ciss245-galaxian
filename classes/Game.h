@@ -52,10 +52,23 @@ private:
 
   // extra methods
   bool user_quits() 
-  { return ((event.poll() && event.type() == QUIT) || kp[RET] && goto_exit()); }
+  { return ((event.poll() && event.type() == QUIT) || kp[RET] && goto_exit() || user_clicked); }
+  bool user_clicked;
   bool playing()
   {
     return background->playing();
+  }
+  bool mouse_on_play() {
+    return (H / 2 + 90 < mouse_y() && mouse_y() < H / 2 + 150 && W / 2 - 250 < mouse_x() && mouse_x() < W / 2 - 50 && ALLOW_MOUSE_SELECTION);
+  }
+  bool mouse_on_instructions() {
+    return (H / 2 + 160 < mouse_y() && mouse_y() < H / 2 + 220 && W / 2 - 250 < mouse_x() && mouse_x() < W / 2 + 320 && ALLOW_MOUSE_SELECTION);
+  }
+  bool mouse_on_leader() {
+    return (H / 2 + 230 < mouse_y() && mouse_y() < H / 2 + 290 && W / 2 - 250 < mouse_x() && mouse_x() < W / 2 + 320 && ALLOW_MOUSE_SELECTION);
+  }
+  bool mouse_on_exit() {
+    return (H / 2 + 300 < mouse_y() && mouse_y() < H / 2 + 360 && W / 2 - 250 < mouse_x() && mouse_x() < W / 2 - 50 && ALLOW_MOUSE_SELECTION);
   }
   bool goto_play()
   { return background->goto_play(); }
@@ -97,5 +110,6 @@ private:
   bool waiting;
   int wait;
   bool pressed;
+  bool clicked;
 };
 #endif
