@@ -86,10 +86,10 @@ void Game::get_input()
     m_key_pressed = true;
 
     if (muted) {
-      game_music.play();
+      game_music.stop();
     }
     else {
-      game_music.stop();
+      game_music.play();
     }
   }
   else if (m_key_pressed && !kp[SDLK_m])
