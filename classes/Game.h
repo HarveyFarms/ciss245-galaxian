@@ -111,5 +111,6 @@ private:
   int wait;
   bool pressed;
   bool clicked;
+  int counter_for_shot;
 };
 #endif

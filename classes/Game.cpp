@@ -29,7 +29,8 @@ Game::Game() :
   waiting(false),
   wait(0),
   pressed(false),
-  clicked(false)
+  clicked(false),
+  counter_for_shot(0)
 {
   srand((unsigned int) time(nullptr));
   Star::set_surface(surface);
@@ -89,7 +90,7 @@ void Game::get_input()
       if (kp[LEFTARROW] && !Galaxip->outside_left() || mouse_x() + 10 < Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = -4;
       else if (kp[RIGHTARROW] && !Galaxip->outside_right() || mouse_x() - 42 > Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = 4;
       else Galaxip->dx() = 0;
-      if (kp[SPACE] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING))
+      if (kp[SPACE] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING && counter_for_shot == 0))
       {
         if (Galaxip->shoot())
           shoot.play();
@@ -107,6 +108,11 @@ void Game::get_input()
 }
 void Game::update()
 {
+  if (counter_for_shot != 0) {
+    ++counter_for_shot;
+    if (counter_for_shot > 60)
+      counter_for_shot = 0;
+  }
   if (amount_ships == 0 && !background->game_ended())
   {
     background->game_over_switch();
@@ -358,8 +364,10 @@ void Game::background_input()
       {
         background->cursor_y = H / 2 + 300;
       }
-      if (kp[RET] && goto_play() || mouse_on_play() && mouse_left()) 
+      if (kp[RET] && goto_play() || mouse_on_play() && mouse_left()) {
         background->switch_screen();
+        counter_for_shot = 1;
+      }
       if (kp[RET] && goto_instructions() || mouse_on_instructions() && mouse_left()) 
         background->switch_instructions();
       if (kp[RET] && goto_leaderboards() || mouse_on_leader() && mouse_left()) 
