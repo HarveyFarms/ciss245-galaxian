@@ -379,11 +379,11 @@ void Game::background_input()
     }
     else if (background->on_leaderboards())
     {
-      if (kp[BACK]) background->switch_leaderboards();
+      if (kp[BACK] || mouse_right()) background->switch_leaderboards();
     }
     else if (background->on_instructions())
     {
-      if (kp[BACK]) background->switch_instructions();
+      if (kp[BACK] || mouse_right()) background->switch_instructions();
     }
   }
 }
