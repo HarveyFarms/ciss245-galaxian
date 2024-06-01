@@ -80,13 +80,13 @@ public:
   }
   virtual bool outside_left()
   {
-    return (x() + w() <= 0);
+    return (x() < 0);
   }
   virtual bool outside_right()
   {
-    return (x() >= W);
+    return (x() + w() >= W);
   }
-  virtual int rand_amnt() 
+  virtual int rand_amnt()
   {
     return 1;
   }
