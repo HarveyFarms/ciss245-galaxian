@@ -106,16 +106,16 @@ void Game::get_input()
       if (kp[LEFTARROW] && !Galaxip->outside_left() || mouse_x() + 10 < Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = -4;
       else if (kp[RIGHTARROW] && !Galaxip->outside_right() || mouse_x() - 42 > Galaxip->x() && ALLOW_MOUSE_MOVEMENT) Galaxip->dx() = 4;
       else Galaxip->dx() = 0;
-      if (kp[SPACE] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING && counter_for_shot == 0))
+      if (kp[UPARROW] && !pressed || (mouse_left() && !clicked && ALLOW_MOUSE_SHOOTING && counter_for_shot == 0))
       {
         if (Galaxip->shoot() && !muted)
           shoot.play();
-        if (kp[SPACE])
+        if (kp[UPARROW])
           pressed = true;
         if (mouse_left())
           clicked = true;
       }
-      else if (!kp[SPACE] && pressed)
+      else if (!kp[UPARROW] && pressed)
         pressed = false;
       else if (!mouse_left() && clicked)
         clicked = false;

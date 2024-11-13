@@ -7,4 +7,11 @@ suk 3150
 kah 2720
 jay 2460
 uww 2350
+<<<<<<< HEAD
 jayden 1560
+=======
+ehb 2210
+pop 2110
+chs 1940
+rlb 1560
+>>>>>>> 99af71aa0a1fc1c36c9c5c6dee411570623a378f

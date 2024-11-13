@@ -126,11 +126,11 @@ public:
     }
     if (outside_left())
     {
-      x() = W - 32;
+      x() = W - w() - 1;
     }
     if (outside_right())
     {
-      x() = 0 - w();
+      x() = 1;
     }
     if (square)
     {
